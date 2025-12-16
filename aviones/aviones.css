@@ -1,72 +1,92 @@
 /* =================================================
-   AJUSTES ESPECÍFICOS DE aviones.html
-   No redefine colores ni tipografías
+   AVIONES.CSS
+   Estilos específicos para aviones.html
+   Usa styles.css como base
    ================================================= */
 
-/* Separación extra bajo el título del hangar */
-.content-card h2 {
-  margin-bottom: 25px;
-}
 
 /* =================================================
-   GRID DE AERONAVES (HANGAR)
-   Preparado para crecer
+   AJUSTES DEL CONTENIDO PRINCIPAL
+   ================================================= */
+
+.content-card h2 {
+  margin-bottom: 30px;
+}
+
+
+/* =================================================
+   GRID DEL HANGAR
    ================================================= */
 
 .aircraft-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 25px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 35px;
+  align-items: start;
 }
 
+
 /* =================================================
-   TARJETA DE AVIÓN
+   BLOQUE COMPLETO DE CADA AVIÓN
+   (imagen + nombre, un solo paquete)
    ================================================= */
 
-.aircraft-card {
+.aircraft-item {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+
+/* =================================================
+   ENLACE DE LA IMAGEN (ÚNICO ELEMENTO CLICABLE)
+   ================================================= */
+
+.aircraft-image-link {
+  display: block;
+  width: 100%;
+  max-width: 260px;
+
+  border-radius: 16px;
+  overflow: hidden;
 
   background-color: #1a1f27;
-  border-radius: 14px;
-  padding: 18px;
-
-  text-decoration: none;
-  color: inherit;
 
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
 }
 
-/* Hover suave (tablet-friendly) */
-.aircraft-card:hover {
+/* Hover solo sobre la imagen */
+.aircraft-image-link:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4);
 }
 
+
 /* =================================================
-   IMAGEN DEL AVIÓN (VIENE DEL HTML)
+   IMAGEN DEL AVIÓN
    ================================================= */
 
-.aircraft-card img {
+.aircraft-image-link img {
+  display: block;
   width: 100%;
-  max-width: 260px;
   height: auto;
 
   object-fit: contain;
-  border-radius: 10px;
-  margin-bottom: 15px;
 }
 
+
 /* =================================================
-   NOMBRE DEL AVIÓN
+   NOMBRE DEL AVIÓN (NO CLICABLE)
    ================================================= */
 
 .aircraft-name {
-  font-size: 1.1rem;
+  margin-top: 14px;
+
+  font-size: 1.15rem;
   font-weight: 600;
   text-align: center;
-  margin-top: auto;
+
+  color: #ffffff;
 }
