@@ -139,3 +139,19 @@ body {
   margin-bottom: 15px;
   opacity: 0.95;
 }
+
+.hero-header {
+  background-color: #000;
+}
+
+.hero-image {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-overlay {
+  position: relative;
+  z-index: 1;
+}
+
