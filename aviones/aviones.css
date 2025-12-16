@@ -1,12 +1,11 @@
 /* =================================================
    AVIONES.CSS
    Estilos específicos para aviones.html
-   Usa styles.css como base
    ================================================= */
 
 
 /* =================================================
-   AJUSTES DEL CONTENIDO PRINCIPAL
+   TÍTULO DEL CONTENIDO
    ================================================= */
 
 .content-card h2 {
@@ -20,15 +19,15 @@
 
 .aircraft-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 35px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 30px;
   align-items: start;
 }
 
 
 /* =================================================
-   BLOQUE COMPLETO DE CADA AVIÓN
-   (imagen + nombre, un solo paquete)
+   BLOQUE COMPLETO DEL AVIÓN
+   (imagen + nombre)
    ================================================= */
 
 .aircraft-item {
@@ -39,16 +38,16 @@
 
 
 /* =================================================
-   ENLACE DE LA IMAGEN (ÚNICO ELEMENTO CLICABLE)
+   ENLACE DE LA IMAGEN (ÚNICO CLICABLE)
    ================================================= */
 
 .aircraft-image-link {
   display: block;
   width: 100%;
-  max-width: 260px;
+  max-width: 220px;
 
-  border-radius: 16px;
   overflow: hidden;
+  border-radius: 2px;
 
   background-color: #1a1f27;
 
@@ -57,10 +56,9 @@
     box-shadow 0.2s ease;
 }
 
-/* Hover solo sobre la imagen */
 .aircraft-image-link:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
 
@@ -74,19 +72,20 @@
   height: auto;
 
   object-fit: contain;
+  border-radius: 2px;
 }
 
 
 /* =================================================
-   NOMBRE DEL AVIÓN (NO CLICABLE)
+   NOMBRE DEL AVIÓN
    ================================================= */
 
 .aircraft-name {
-  margin-top: 14px;
+  margin-top: 10px;
 
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  text-align: center;
 
+  text-align: center;
   color: #ffffff;
 }
