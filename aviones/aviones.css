@@ -1,0 +1,76 @@
+/* =================================================
+   HEADER DE AVIONES
+   Usa el mismo tamaño y overlay que index
+   Solo cambia la imagen de fondo
+   ================================================= */
+
+.hero-header {
+  background-image: url("../assets/images/aviones.png");
+}
+
+/* =================================================
+   CONTENIDO PRINCIPAL DE AVIONES
+   ================================================= */
+
+.content-card h2 {
+  margin-bottom: 25px;
+}
+
+/* =================================================
+   GRID DE AERONAVES (HANGAR)
+   ================================================= */
+
+.aircraft-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 25px;
+  margin-top: 10px;
+}
+
+/* =================================================
+   TARJETA DE AVIÓN
+   ================================================= */
+
+.aircraft-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+
+  background-color: #1a1f27;
+  border-radius: 14px;
+  padding: 18px;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hover suave (tablet-friendly) */
+.aircraft-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+/* =================================================
+   IMAGEN DEL AVIÓN
+   ================================================= */
+
+.aircraft-card img {
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  object-fit: contain;
+}
+
+/* =================================================
+   NOMBRE DEL AVIÓN
+   ================================================= */
+
+.aircraft-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  margin-top: auto;
+}
