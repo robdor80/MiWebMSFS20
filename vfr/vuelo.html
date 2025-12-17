@@ -47,57 +47,23 @@
             <div class="slot-content" id="contenido-cen">
                 
                 <div id="tab-checklist" class="tab-content">
-                    <h3>Cessna 152: Arranque</h3>
+                    <h3 id="titulo-checklist">Checklist</h3>
+                    <div id="checklist-container"></div>
                     
-                    <div class="check-row">
-                        <input type="checkbox" id="c1">
-                        <label for="c1">Inspección Ext. <span>OK</span></label>
-                    </div>
-                    <div class="check-row">
-                        <input type="checkbox" id="c2">
-                        <label for="c2">Cinturones <span>AJUST.</span></label>
-                    </div>
-                    <div class="check-row">
-                        <input type="checkbox" id="c3">
-                        <label for="c3">Válvula Combustible <span>ON</span></label>
-                    </div>
-                    <div class="check-row">
-                        <input type="checkbox" id="c4">
-                        <label for="c4">Master Switch <span>ON</span></label>
-                    </div>
-                    <div class="check-row">
-                        <input type="checkbox" id="c5">
-                        <label for="c5">Mezcla <span>RICA</span></label>
-                    </div>
-                    <div class="check-row">
-                        <input type="checkbox" id="c6">
-                        <label for="c6">Área de hélice <span>LIBRE</span></label>
-                    </div>
-                    <div class="check-row">
-                        <input type="checkbox" id="c7">
-                        <label for="c7">Llave contacto <span>START</span></label>
-                    </div>
-
                     <button class="btn-reset" onclick="resetChecklist()">🔄 Limpiar Checklist</button>
                 </div>
 
                 <div id="tab-ficha" class="tab-content hidden">
                     <h3>Velocidades (KIAS)</h3>
                     <table class="tabla-datos">
-                        <tr><td>Vso (Stall Flaps)</td><td class="num">35</td></tr>
-                        <tr><td>Vs1 (Stall Clean)</td><td class="num">40</td></tr>
-                        <tr><td>Vr (Rotación)</td><td class="num">50</td></tr>
-                        <tr><td>Vx (Ángulo)</td><td class="num">55</td></tr>
-                        <tr><td>Vy (Ascenso)</td><td class="num">67</td></tr>
-                        <tr><td>Vfe (Flaps)</td><td class="num">85</td></tr>
-                        <tr><td>Vne (Nunca Exc.)</td><td class="num">149</td></tr>
+                        <tbody id="tabla-velocidades">
+                            </tbody>
                     </table>
                     
                     <h3 style="margin-top:1rem">Motor & Fuel</h3>
                     <table class="tabla-datos">
-                        <tr><td>Max RPM</td><td class="num">2550</td></tr>
-                        <tr><td>Aceite (qts)</td><td class="num">4-6</td></tr>
-                        <tr><td>Combustible</td><td class="num">26 Gal</td></tr>
+                        <tbody id="tabla-motor">
+                            </tbody>
                     </table>
                 </div>
 
@@ -115,6 +81,24 @@
         </section>
 
     </main>
+
+    <style>
+        .header-con-tabs { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: #2a2a2a; }
+        .toggle-wrapper { display: flex; gap: 5px; background: #111; padding: 3px; border-radius: 5px; }
+        .tab-btn { background: transparent; border: none; color: #777; padding: 5px 10px; cursor: pointer; font-weight: bold; border-radius: 3px; transition: 0.2s; }
+        .tab-btn.active { background: #007bff; color: white; }
+        .hidden { display: none !important; }
+        
+        .check-row { background: rgba(255,255,255,0.05); margin-bottom: 4px; padding: 8px; display: flex; align-items: center; border-left: 3px solid transparent; }
+        .check-row:has(input:checked) { border-left-color: #4caf50; opacity: 0.5; text-decoration: line-through; }
+        .check-row label { flex: 1; margin-left: 10px; display: flex; justify-content: space-between; cursor: pointer; }
+        .check-row span { color: #f1c40f; font-weight: bold; }
+
+        .tabla-datos { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .tabla-datos td { border-bottom: 1px solid #444; padding: 5px; }
+        .tabla-datos .num { text-align: right; color: #4caf50; font-family: monospace; font-size: 1.1em;}
+        .btn-reset { width: 100%; margin-top: 15px; padding: 8px; background: #333; color: white; border: 1px solid #555; cursor: pointer; }
+    </style>
 
     <script src="../js/motor_vuelo.js"></script>
 </body>

@@ -1,0 +1,39 @@
+{
+    "id": "c152",
+    "nombre": "Cessna 152 Aerobat",
+    "imagen": "images/c152.jpg",
+    "archivo_perfil": "data/c152.json",
+    
+    "checklist_arranque": [
+        {"item": "Inspección Exterior", "estado": "COMPLETA"},
+        {"item": "Cinturones / Arneses", "estado": "AJUSTADOS"},
+        {"item": "Frenos", "estado": "PROBADOS"},
+        {"item": "Válvula Combustible", "estado": "ON"},
+        {"item": "Mezcla", "estado": "RICA"},
+        {"item": "Carburador Cal.", "estado": "FRÍO"},
+        {"item": "Master Switch", "estado": "ON"},
+        {"item": "Beacon", "estado": "ON"},
+        {"item": "Área de hélice", "estado": "LIBRE"},
+        {"item": "Llave de contacto", "estado": "START"},
+        {"item": "Presión Aceite", "estado": "EN VERDE"}
+    ],
+
+    "ficha_tecnica": {
+        "velocidades": [
+            {"nombre": "Vso", "desc": "Stall Flaps", "valor": 35},
+            {"nombre": "Vs1", "desc": "Stall Limpio", "valor": 40},
+            {"nombre": "Vr", "desc": "Rotación", "valor": 50},
+            {"nombre": "Vx", "desc": "Ángulo", "valor": 55},
+            {"nombre": "Vy", "desc": "Ascenso", "valor": 67},
+            {"nombre": "Vfe", "desc": "Max Flaps", "valor": 85},
+            {"nombre": "Vne", "desc": "Nunca Exceder", "valor": 149},
+            {"nombre": "Best Glide", "desc": "Planeo", "valor": 60}
+        ],
+        "info_motor": [
+            {"nombre": "Max RPM", "valor": 2550},
+            {"nombre": "Aceite (Qts)", "valor": "4-6"},
+            {"nombre": "Fuel Total", "valor": "26 Gal"},
+            {"nombre": "Fuel Usable", "valor": "24.5 Gal"}
+        ]
+    }
+}

@@ -1,17 +1,14 @@
 document.addEventListener('DOMContentLoaded', iniciarVuelo);
 
 async function iniciarVuelo() {
-    // 1. Recuperamos qué avión seleccionó el usuario en la pantalla anterior
     const idAvion = localStorage.getItem('avion_seleccionado');
 
-    // Seguridad: Si alguien entra directo a vuelo.html sin elegir avión, lo echamos
     if (!idAvion) {
         alert("Debes seleccionar un avión primero.");
         window.location.href = '../aviones/aviones.html';
         return;
     }
 
-    // 2. Cargamos los datos de ese avión específico
     try {
         await cargarDatosAvion(idAvion);
         iniciarReloj();
@@ -22,27 +19,77 @@ async function iniciarVuelo() {
 }
 
 async function cargarDatosAvion(id) {
-    // Primero leemos el inventario para saber dónde está el perfil de este ID
+    // 1. Buscamos el avión en la flota
     const respFlota = await fetch('../data/flota.json');
     const flota = await respFlota.json();
     
     const avionInfo = flota.find(a => a.id === id);
     if (!avionInfo) throw new Error("Avión no encontrado en flota");
 
-    // Ahora leemos el perfil completo (el JSON grande)
+    // 2. Cargamos su perfil completo
     const respPerfil = await fetch('../' + avionInfo.archivo_perfil);
     const perfil = await respPerfil.json();
 
-    // Guardamos el perfil completo en memoria para usarlo en los módulos
     window.perfilAvionActual = perfil;
 
-    // ACTUALIZAMOS LA INTERFAZ
-    // Ponemos el nombre en la barra superior (esto SÍ lo mantenemos)
+    // 3. Rellenamos la barra superior
     document.getElementById('indicador-avion').textContent = perfil.nombre;
 
-    /* HEMOS QUITADO EL BLOQUE QUE SOBREESCRIBÍA EL PANEL CENTRAL
-       Ahora se respeta el HTML de las pestañas (Checklist/Ficha)
-    */
+    /* --- AQUÍ EMPIEZA LA MAGIA AUTOMÁTICA --- */
+
+    // A) Generar CHECKLIST
+    const containerCheck = document.getElementById('checklist-container');
+    const tituloCheck = document.getElementById('titulo-checklist');
+    
+    // Limpiamos lo anterior
+    containerCheck.innerHTML = ''; 
+    tituloCheck.textContent = perfil.nombre + ": Arranque";
+
+    // Si el JSON tiene checklist, la creamos
+    if (perfil.checklist_arranque) {
+        perfil.checklist_arranque.forEach((paso, index) => {
+            const div = document.createElement('div');
+            div.className = 'check-row';
+            // Creamos el HTML de cada línea
+            div.innerHTML = `
+                <input type="checkbox" id="chk_${index}">
+                <label for="chk_${index}">
+                    ${paso.item} <span>${paso.estado}</span>
+                </label>
+            `;
+            containerCheck.appendChild(div);
+        });
+    }
+
+    // B) Generar FICHA TÉCNICA (Velocidades)
+    const tablaVel = document.getElementById('tabla-velocidades');
+    tablaVel.innerHTML = ''; // Limpiar
+
+    if (perfil.ficha_tecnica && perfil.ficha_tecnica.velocidades) {
+        perfil.ficha_tecnica.velocidades.forEach(v => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${v.nombre} <small style="color:#888">(${v.desc})</small></td>
+                <td class="num">${v.valor}</td>
+            `;
+            tablaVel.appendChild(tr);
+        });
+    }
+
+    // C) Generar FICHA TÉCNICA (Motor)
+    const tablaMotor = document.getElementById('tabla-motor');
+    tablaMotor.innerHTML = ''; // Limpiar
+
+    if (perfil.ficha_tecnica && perfil.ficha_tecnica.info_motor) {
+        perfil.ficha_tecnica.info_motor.forEach(m => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${m.nombre}</td>
+                <td class="num">${m.valor}</td>
+            `;
+            tablaMotor.appendChild(tr);
+        });
+    }
 }
 
 function iniciarReloj() {
@@ -53,17 +100,15 @@ function iniciarReloj() {
     }, 1000);
 }
 
-/* --- FUNCIONES PANEL CENTRAL (CONTROL DE PESTAÑAS) --- */
+/* --- FUNCIONES DE LOS BOTONES --- */
 
 function switchTab(tabName) {
-    // 1. Obtener los paneles por su ID
     const checklist = document.getElementById('tab-checklist');
     const ficha = document.getElementById('tab-ficha');
-
-    // Comprobación de seguridad por si el HTML aún no ha cargado
+    
     if (!checklist || !ficha) return;
 
-    // 2. Mostrar/Ocultar paneles
+    // Mostrar/Ocultar
     if (tabName === 'checklist') {
         checklist.classList.remove('hidden');
         ficha.classList.add('hidden');
@@ -72,7 +117,7 @@ function switchTab(tabName) {
         ficha.classList.remove('hidden');
     }
 
-    // 3. Gestionar estado visual de los botones
+    // Iluminar botones
     const btns = document.querySelectorAll('.toggle-wrapper .tab-btn');
     if (btns.length >= 2) {
         if (tabName === 'checklist') {
@@ -86,9 +131,6 @@ function switchTab(tabName) {
 }
 
 function resetChecklist() {
-    // Busca todos los checkboxes dentro del panel y los desmarca
     const checks = document.querySelectorAll('#tab-checklist input[type="checkbox"]');
-    if (checks) {
-        checks.forEach(cb => cb.checked = false);
-    }
+    checks.forEach(cb => cb.checked = false);
 }
