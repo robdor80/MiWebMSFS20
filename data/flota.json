@@ -1,16 +1,9 @@
 [
     {
         "id": "c152",
-        "nombre": "Cessna 152",
-        "imagen": "images/c152.jpg",
+        "nombre": "Cessna 152 Aerobat",
+        "imagen": "aviones/library/cessna-152/avion.png",
         "descripcion": "Ideal para entrenamiento inicial.",
         "archivo_perfil": "data/c152.json"
-    },
-    {
-        "id": "c172",
-        "nombre": "Cessna 172 Skyhawk",
-        "imagen": "images/c172.jpg",
-        "descripcion": "El avión más popular de la historia.",
-        "archivo_perfil": "data/c172.json"
     }
 ]

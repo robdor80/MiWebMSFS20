@@ -5,36 +5,142 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hangar | MiWebMSFS20</title>
     <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="../css/aviones.css">
+    <style>
+        /* Estilos rápidos integrados para el Hangar */
+        body { background-color: #0f0f0f; color: white; font-family: sans-serif; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        
+        h1 { color: #4a90e2; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        
+        .grid-aviones {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card-avion {
+            background: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+        }
+
+        .card-avion:hover {
+            transform: translateY(-5px);
+            border-color: #4a90e2;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+        }
+
+        .card-body { padding: 15px; }
+        .card-body h3 { margin: 0 0 10px 0; color: #fff; }
+        .card-body p { color: #aaa; font-size: 0.9em; margin: 0; }
+        
+        .btn-seleccionar {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-seleccionar:hover { background: #357abd; }
+        
+        .error-msg { color: #ff4444; background: #330000; padding: 10px; border: 1px solid red; margin-top: 20px; }
+    </style>
 </head>
 <body>
 
-    <div class="layout-container">
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <h2>Navegación</h2>
-            </div>
-            <ul class="nav-links">
-                <li><a href="../index.html">Inicio</a></li>
-                <li><a href="../vfr/vuelo.html">Vuelo VFR</a></li>
-                <li><a href="#" class="disabled">Vuelo IFR (Próx)</a></li>
-                <li><a href="#" class="active">Aviones</a></li>
-                <li><a href="../vfr/planificador.html">Rutas</a></li>
-            </ul>
-        </nav>
+    <nav style="background: #111; padding: 10px; border-bottom: 1px solid #333;">
+        <a href="../index.html" style="color: #aaa; text-decoration: none;">🏠 Inicio</a>
+    </nav>
 
-        <main class="content">
-            <header class="page-header">
-                <h1>Hangar de Aeronaves</h1>
-                <p>Catálogo de flota VFR disponible</p>
-            </header>
+    <div class="container">
+        <h1>Hangar de Aeronaves</h1>
+        <p>Selecciona una aeronave para comenzar el vuelo.</p>
 
-            <div id="grid-aviones" class="grid-aviones">
-                <p style="color: #aaa;">Cargando flota...</p>
-            </div>
-        </main>
+        <div id="grid-aviones" class="grid-aviones">
+            <p style="color: #666;">Cargando flota...</p>
+        </div>
     </div>
 
-    <script src="../js/cargar_flota.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', cargarFlota);
+
+        async function cargarFlota() {
+            const grid = document.getElementById('grid-aviones');
+
+            try {
+                // 1. Pedimos el archivo JSON
+                const response = await fetch('../data/flota.json');
+                
+                if (!response.ok) {
+                    throw new Error(`Error HTTP: ${response.status}`);
+                }
+
+                const flota = await response.json();
+
+                // 2. Limpiamos el mensaje de "Cargando..."
+                grid.innerHTML = '';
+
+                // 3. Creamos las tarjetas
+                flota.forEach(avion => {
+                    // Ajuste de ruta de imagen: si estamos en /aviones/, y la imagen está en /images/
+                    // necesitamos añadir "../" delante.
+                    let rutaImagen = avion.imagen;
+                    if (!rutaImagen.startsWith('../') && !rutaImagen.startsWith('http')) {
+                        rutaImagen = '../' + rutaImagen;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'card-avion';
+                    card.onclick = () => seleccionarAvion(avion.id);
+
+                    card.innerHTML = `
+                        <img src="${rutaImagen}" alt="${avion.nombre}" class="card-img" onerror="this.style.display='none'">
+                        <div class="card-body">
+                            <h3>${avion.nombre}</h3>
+                            <p>${avion.descripcion}</p>
+                            <button class="btn-seleccionar">VOLAR ✈️</button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+            } catch (error) {
+                console.error("Error cargando flota:", error);
+                grid.innerHTML = `
+                    <div class="error-msg">
+                        <strong>Error cargando la flota:</strong><br>
+                        ${error.message}<br><br>
+                        Asegúrate de que existe el archivo <em>data/flota.json</em> y que es válido.
+                    </div>
+                `;
+            }
+        }
+
+        function seleccionarAvion(id) {
+            // Guardamos el ID en la memoria del navegador
+            localStorage.setItem('avion_seleccionado', id);
+            // Redirigimos a la página de vuelo
+            window.location.href = '../vfr/vuelo.html'; // Ajusta esta ruta si tu vuelo.html está en otra carpeta
+        }
+    </script>
 </body>
 </html>
