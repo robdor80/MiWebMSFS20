@@ -37,18 +37,12 @@ async function cargarDatosAvion(id) {
     window.perfilAvionActual = perfil;
 
     // ACTUALIZAMOS LA INTERFAZ
-    // Ponemos el nombre en la barra superior
+    // Ponemos el nombre en la barra superior (esto SÍ lo mantenemos)
     document.getElementById('indicador-avion').textContent = perfil.nombre;
 
-    // (Temporal) Mostramos texto en el slot central para confirmar que funciona
-    const panelCentral = document.getElementById('contenido-cen');
-    panelCentral.innerHTML = `
-        <div style="text-align:center; color: white;">
-            <h2 style="color: #4a90e2;">${perfil.nombre}</h2>
-            <p>Datos cargados correctamente.</p>
-            <p>Velocidad de Ascenso (Vy): <strong>${perfil.ficha_tecnica.velocidades_importantes.vy_ascenso} kts</strong></p>
-        </div>
-    `;
+    /* HEMOS QUITADO EL BLOQUE QUE SOBREESCRIBÍA EL PANEL CENTRAL
+       Ahora se respeta el HTML de las pestañas (Checklist/Ficha)
+    */
 }
 
 function iniciarReloj() {
@@ -59,12 +53,15 @@ function iniciarReloj() {
     }, 1000);
 }
 
-/* --- FUNCIONES PANEL CENTRAL --- */
+/* --- FUNCIONES PANEL CENTRAL (CONTROL DE PESTAÑAS) --- */
 
 function switchTab(tabName) {
-    // 1. Obtener los paneles
+    // 1. Obtener los paneles por su ID
     const checklist = document.getElementById('tab-checklist');
     const ficha = document.getElementById('tab-ficha');
+
+    // Comprobación de seguridad por si el HTML aún no ha cargado
+    if (!checklist || !ficha) return;
 
     // 2. Mostrar/Ocultar paneles
     if (tabName === 'checklist') {
@@ -77,17 +74,21 @@ function switchTab(tabName) {
 
     // 3. Gestionar estado visual de los botones
     const btns = document.querySelectorAll('.toggle-wrapper .tab-btn');
-    if (tabName === 'checklist') {
-        btns[0].classList.add('active');
-        btns[1].classList.remove('active');
-    } else {
-        btns[0].classList.remove('active');
-        btns[1].classList.add('active');
+    if (btns.length >= 2) {
+        if (tabName === 'checklist') {
+            btns[0].classList.add('active');
+            btns[1].classList.remove('active');
+        } else {
+            btns[0].classList.remove('active');
+            btns[1].classList.add('active');
+        }
     }
 }
 
 function resetChecklist() {
     // Busca todos los checkboxes dentro del panel y los desmarca
-    document.querySelectorAll('#tab-checklist input[type="checkbox"]')
-        .forEach(cb => cb.checked = false);
+    const checks = document.querySelectorAll('#tab-checklist input[type="checkbox"]');
+    if (checks) {
+        checks.forEach(cb => cb.checked = false);
+    }
 }
