@@ -1,0 +1,113 @@
+{
+  "id": "cessna-152",
+  "nombre": "Cessna 152",
+  "tipo": "VFR",
+  "creada": "2025-12-16",
+  "resumen": "Checklist personalizada por Mr. President. Flujo optimizado para MSFS.",
+
+  "imagenes": {
+    "avion": "aviones/library/cessna-152/avion.png",
+    "mando": "aviones/library/cessna-152/mando.png"
+  },
+
+  "__SECCION_1__": "DATOS PARA LA FICHA DE VUELO (TABLET EN EL AIRE)",
+  "ficha_tecnica": {
+    "velocidades_importantes": {
+      "vr_rotacion": 55,
+      "vy_ascenso": 70,
+      "vx_ascenso_corto": 60,
+      "vso_perdida_sucia": 35,
+      "vs1_perdida_limpia": 40,
+      "vne_nunca_exceder": 149,
+      "vno_estructural": 111,
+      "vfe_flaps": 85
+    },
+    "configuracion_crucero": {
+      "rpm_crucero": 2300,
+      "mezcla": "Ajustar por encima de 3000 ft",
+      "trim": "Ajustar"
+    },
+    "configuracion_aterrizaje": {
+      "vapp_aproximacion": 60,
+      "vapp_final": 55,
+      "flaps_limite": "No extender por encima de 85 KIAS"
+    }
+  },
+
+  "__SECCION_2__": "PROCEDIMIENTOS (CHECKLIST EN TIERRA)",
+  "checklists": {
+    "1_antes_puesta_en_marcha": [
+      "Master (Master Switch) - OFF",
+      "Válvula de combustible - ON"
+    ],
+    "2_puesta_en_marcha": [
+      "Mezcla - RICA (RICH)",
+      "Calef. Carburador - FRÍO (COLD)",
+      "Master (Master Switch) - ON",
+      "Baliza (Beacon) - ON",
+      "Potencia (Throttle) - Abrir 1 cm",
+      "Zona Hélice - LIBRE (CLEAR)",
+      "Ignición - START",
+      "Potencia - IDLE (1000 RPM)",
+      "Flaps - ARRIBA (UP)",
+      "Luces - SEGÚN REQUERIDO",
+      "Horizonte Artificial - CHEQUEAR",
+      "Altímetro - AJUSTAR (Tecla B)",
+      "Frenos - LIBERAR"
+    ],
+    "3_rodaje": [
+      "Frenos - CHEQUEAR"
+    ],
+    "4_antes_del_despegue": [
+      "Comandos - LIBRES Y CORRECTOS",
+      "Compensador (Trim) - DESPEGUE (TAKEOFF)",
+      "Frenos - PUESTOS",
+      "Potencia - 1700 RPM",
+      "Magnetos - CHEQUEAR DER/IZQ (Máx caída 125)",
+      "Calef. Carburador - CHEQUEAR (caída RPM)",
+      "Potencia - IDLE (1000 RPM)",
+      "Luces - SEGÚN REQUERIDO",
+      "Flaps - 0° (o 10° PISTA CORTA)"
+    ],
+    "5_despegue_y_ascenso": [
+      "Potencia - MÁXIMA (FULL - 2400 RPM)",
+      "Tacómetro - VERDE",
+      "Rotación - 55 KIAS",
+      "Ascenso Inicial - 60 KIAS (hasta 200 ft AGL)",
+      "Flaps - ARRIBA (UP)",
+      "Ascenso Continuo - 70 KIAS"
+    ],
+    "6_crucero": [
+      "Potencia - 2300 RPM",
+      "Mezcla - AJUSTAR (si > 3000 ft)",
+      "Compensador - AJUSTAR"
+    ],
+    "7_descenso": [
+      "Potencia - SEGÚN REQUERIDO",
+      "Mezcla - SEGÚN REQUERIDO",
+      "Calef. Carburador - ON (si cortas motor)",
+      "Flaps - SEGÚN REQUERIDO (< 85 KIAS)",
+      "Luces Aterrizaje - SEGÚN REQUERIDO"
+    ],
+    "8_aterrizaje": [
+      "Velocidad - 60 KIAS (Aproximación)",
+      "Velocidad - 55 KIAS (Final)",
+      "Potencia - IDLE",
+      "Toque - TREN PRINCIPAL",
+      "Frenos - APLICAR"
+    ],
+    "9_luego_del_aterrizaje": [
+      "Calef. Carburador - FRÍO (COLD)",
+      "Flaps - ARRIBA (UP)",
+      "Luces - SEGÚN REQUERIDO"
+    ],
+    "10_apagado": [
+      "Frenos - PUESTOS",
+      "Potencia - 1200 RPM",
+      "Mezcla - CORTADA (CUTOFF)",
+      "Luces - OFF",
+      "Ignición - OFF",
+      "Master - OFF"
+    ]
+  }
+}
