@@ -4,19 +4,41 @@
     "imagen": "images/c152.jpg",
     "archivo_perfil": "data/c152.json",
     
-    "checklist_arranque": [
-        {"item": "Inspección Exterior", "estado": "COMPLETA"},
-        {"item": "Cinturones / Arneses", "estado": "AJUSTADOS"},
-        {"item": "Frenos", "estado": "PROBADOS"},
-        {"item": "Válvula Combustible", "estado": "ON"},
-        {"item": "Mezcla", "estado": "RICA"},
-        {"item": "Carburador Cal.", "estado": "FRÍO"},
-        {"item": "Master Switch", "estado": "ON"},
-        {"item": "Beacon", "estado": "ON"},
-        {"item": "Área de hélice", "estado": "LIBRE"},
-        {"item": "Llave de contacto", "estado": "START"},
-        {"item": "Presión Aceite", "estado": "EN VERDE"}
+    "checklists": {
+    "1_antes_puesta_en_marcha": [
+      "Master (Master Switch) - OFF",
+      "Válvula de combustible - ON"
     ],
+    "2_puesta_en_marcha": [
+      "Mezcla - RICA (RICH)",
+      "Calef. Carburador - FRÍO (COLD)",
+      "Master (Master Switch) - ON",
+      "Baliza (Beacon) - ON",
+      "Potencia (Throttle) - Abrir 1 cm",
+      "Zona Hélice - LIBRE (CLEAR)",
+      "Ignición - START",
+      "Potencia - IDLE (1000 RPM)",
+      "Flaps - ARRIBA (UP)",
+      "Luces - SEGÚN REQUERIDO",
+      "Horizonte Artificial - CHEQUEAR",
+      "Altímetro - AJUSTAR (Tecla B)",
+      "Frenos - LIBERAR"
+    ],
+    "3_rodaje": [
+      "Frenos - CHEQUEAR"
+    ],
+    "4_antes_del_despegue": [
+      "Comandos - LIBRES Y CORRECTOS",
+      "Compensador (Trim) - DESPEGUE (TAKEOFF)",
+      "Frenos - PUESTOS",
+      "Potencia - 1700 RPM",
+      "Magnetos - CHEQUEAR DER/IZQ (Máx caída 125)",
+      "Calef. Carburador - CHEQUEAR (caída RPM)",
+      "Potencia - IDLE (1000 RPM)",
+      "Luces - SEGÚN REQUERIDO",
+      "Flaps - 0° (o 10° PISTA CORTA)"
+    ]
+  },
 
     "ficha_tecnica": {
         "velocidades": [
