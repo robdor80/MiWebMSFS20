@@ -1,72 +1,40 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aviones | Mi Web MSFS 2020</title>
-
-    <!-- CSS -->
+    <title>Hangar | MiWebMSFS20</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="../css/aviones.css">
 </head>
-
 <body>
 
-    <!-- HEADER / HERO -->
-    <header class="hero-header">
-        <img src="../assets/imagenes/aviones.png" class="hero-image">
-        <div class="hero-overlay">
-            <h1>Aviones</h1>
-            <p>Catálogo de aeronaves disponibles en Mi Web MSFS 2020</p>
-        </div>
-    </header>
-
-    <!-- CUERPO PRINCIPAL -->
-    <div class="layout">
-
-        <!-- NAVEGACIÓN LATERAL -->
-        <nav class="side-nav">
-            <h3>Navegación</h3>
-            <ul>
+    <div class="layout-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Navegación</h2>
+            </div>
+            <ul class="nav-links">
                 <li><a href="../index.html">Inicio</a></li>
-                <li><a href="../vfr/mando.html">Vuelo VFR</a></li>
-                <li class="disabled">Vuelo IFR (próximamente)</li>
-                <li><a href="../rutas/">Rutas</a></li>
+                <li><a href="../vfr/vuelo.html">Vuelo VFR</a></li>
+                <li><a href="#" class="disabled">Vuelo IFR (Próx)</a></li>
+                <li><a href="#" class="active">Aviones</a></li>
+                <li><a href="../vfr/planificador.html">Rutas</a></li>
             </ul>
         </nav>
 
-        <!-- CONTENIDO PRINCIPAL -->
-        <main class="main-content">
+        <main class="content">
+            <header class="page-header">
+                <h1>Hangar de Aeronaves</h1>
+                <p>Catálogo de flota VFR disponible</p>
+            </header>
 
-            <div class="content-card">
-                <h2>Hangar de aeronaves</h2>
-
-                <div class="aircraft-grid">
-
-                    <!-- TARJETA AVIÓN -->
-                    <div class="aircraft-item">
-
-                        <a href="cessna-152/ficha/ficha-cessna-152.html" class="aircraft-image-link">
-                            <img src="cessna-152/cessna-152.png" alt="Cessna 152">
-                        </a>
-
-                        <div class="aircraft-name">
-                            Cessna 152
-                        </div>
-
-                    </div>
-
-                    <!-- FUTURAS TARJETAS AQUÍ -->
-
-                </div>
-
+            <div id="grid-aviones" class="grid-aviones">
+                <p style="color: #aaa;">Cargando flota...</p>
             </div>
-
         </main>
-
     </div>
 
+    <script src="../js/cargar_flota.js"></script>
 </body>
-
 </html>
