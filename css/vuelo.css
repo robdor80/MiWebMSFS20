@@ -40,6 +40,7 @@ body.modo-vuelo {
     display: flex; /* Esto pone los slots en fila horizontal */
     padding: 5px;
     gap: 5px; /* Espacio entre slots */
+    overflow: hidden; /* Asegura que nada se salga del contenedor principal */
 }
 
 /* Estilo de cada Slot */
@@ -51,6 +52,7 @@ body.modo-vuelo {
     display: flex;
     flex-direction: column;
     min-width: 0; /* Evita que el slot se rompa si el contenido es muy ancho */
+    height: 100%; /* Forzamos altura completa */
 }
 
 .slot-header {
@@ -63,13 +65,26 @@ body.modo-vuelo {
     justify-content: space-between;
     text-transform: uppercase;
     letter-spacing: 1px;
+    flex-shrink: 0; /* Evita que el header se aplaste */
 }
 
+/* --- CAMBIO IMPORTANTE AQUÍ PARA EL SCROLL --- */
 .slot-content {
     flex-grow: 1;
-    overflow-y: auto; /* Permite scroll solo dentro del slot si hace falta */
+    /* Cambiamos overflow-y: auto a hidden aquí. 
+       El scroll lo harán los hijos (#tab-checklist) */
+    overflow: hidden; 
+    display: flex;
+    flex-direction: column;
     padding: 10px;
     position: relative;
+}
+
+/* Scroll específico para las pestañas de contenido */
+#tab-checklist, #tab-ficha {
+    flex-grow: 1;
+    overflow-y: auto; /* AQUÍ es donde ocurre el scroll */
+    padding-right: 5px; /* Espacio para que la barra no tape texto */
 }
 
 .placeholder {
@@ -88,6 +103,7 @@ body.modo-vuelo {
     align-items: center;
     padding: 5px 10px;
     background: #2a2a2a; 
+    flex-shrink: 0; /* Evita que se aplaste al hacer scroll */
 }
 
 /* Contenedor de los botones */
@@ -159,5 +175,34 @@ body.modo-vuelo {
     color: white;
     border: 1px solid #555;
     cursor: pointer;
+    flex-shrink: 0;
 }
 .btn-reset:hover { background: #444; }
+
+
+/* =========================================
+   SCROLLBAR PERSONALIZADA (ESTILO MODERNO)
+   ========================================= */
+   
+/* Ancho de la barra */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+/* El carril (fondo) */
+::-webkit-scrollbar-track {
+    background: #121418; 
+    border-radius: 4px;
+}
+
+/* La barra que se mueve ("thumb") */
+::-webkit-scrollbar-thumb {
+    background: #444; 
+    border-radius: 4px;
+}
+
+/* Al pasar el ratón por encima de la barra */
+::-webkit-scrollbar-thumb:hover {
+    background: #ff9800; /* Naranja estilo aviación */
+}
