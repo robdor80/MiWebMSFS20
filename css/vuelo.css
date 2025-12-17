@@ -1,0 +1,80 @@
+/* Quitamos scroll y márgenes para aprovechar la tablet al 100% */
+body.modo-vuelo {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background-color: #121418;
+}
+
+/* Barra superior muy fina */
+.top-bar {
+    height: 40px;
+    background-color: #0d0f12;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.btn-salir {
+    text-decoration: none;
+    color: #888;
+    margin-right: 15px;
+    font-weight: bold;
+}
+.btn-salir:hover { color: #fff; }
+
+#indicador-avion {
+    color: #4a90e2;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Contenedor de los 3 slots */
+.cockpit-container {
+    flex-grow: 1;
+    display: flex; /* Esto pone los slots en fila horizontal */
+    padding: 5px;
+    gap: 5px; /* Espacio entre slots */
+}
+
+/* Estilo de cada Slot */
+.slot {
+    flex: 1; /* Significa: "Ocupad todos el mismo ancho" */
+    background-color: #1e222d;
+    border: 1px solid #333;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Evita que el slot se rompa si el contenido es muy ancho */
+}
+
+.slot-header {
+    background-color: #252a36;
+    padding: 5px 10px;
+    border-bottom: 1px solid #333;
+    font-size: 0.8rem;
+    color: #aaa;
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.slot-content {
+    flex-grow: 1;
+    overflow-y: auto; /* Permite scroll solo dentro del slot si hace falta */
+    padding: 10px;
+    position: relative;
+}
+
+.placeholder {
+    color: #444;
+    text-align: center;
+    margin-top: 50%;
+    transform: translateY(-50%);
+}

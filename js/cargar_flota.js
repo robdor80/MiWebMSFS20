@@ -86,7 +86,10 @@ function crearTarjetaHTML(avion) {
 }
 
 function abrirFicha(idAvion) {
-    // Por ahora solo mostramos un aviso. 
-    // En el siguiente paso haremos que esto lleve a la pantalla de vuelo.
-    alert(`Has seleccionado: ${idAvion}. \n(Pronto esto abrirá el visor de vuelo)`);
+    // 1. Guardamos el ID del avión en la memoria del navegador
+    // Así la siguiente página sabrá qué cargar.
+    localStorage.setItem('avion_seleccionado', idAvion);
+    
+    // 2. Redirigimos a la pantalla de vuelo
+    window.location.href = '../vfr/vuelo.html';
 }

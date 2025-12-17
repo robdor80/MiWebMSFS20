@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vuelo VFR | MiWebMSFS20</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/vuelo.css">
+</head>
+<body class="modo-vuelo">
+
+    <header class="top-bar">
+        <div class="info-vuelo">
+            <a href="../aviones/aviones.html" class="btn-salir">⬅ Salir</a>
+            <span id="indicador-avion">Cargando avión...</span>
+        </div>
+        <div class="indicadores-rapidos">
+            <span id="reloj-local">00:00</span>
+        </div>
+    </header>
+
+    <main class="cockpit-container">
+        
+        <section id="slot-izq" class="slot">
+            <div class="slot-header">
+                <span>MÓDULO 1</span>
+                <button class="btn-config">⚙</button>
+            </div>
+            <div class="slot-content" id="contenido-izq">
+                <p class="placeholder">Vacío</p>
+            </div>
+        </section>
+
+        <section id="slot-cen" class="slot">
+            <div class="slot-header">
+                <span>FICHA TÉCNICA</span>
+                <button class="btn-config">⚙</button>
+            </div>
+            <div class="slot-content" id="contenido-cen">
+                <p class="placeholder">Cargando datos del avión...</p>
+            </div>
+        </section>
+
+        <section id="slot-der" class="slot">
+            <div class="slot-header">
+                <span>MÓDULO 3</span>
+                <button class="btn-config">⚙</button>
+            </div>
+            <div class="slot-content" id="contenido-der">
+                <p class="placeholder">Vacío</p>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="../js/motor_vuelo.js"></script>
+</body>
+</html>
