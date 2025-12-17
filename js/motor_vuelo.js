@@ -35,30 +35,61 @@ async function cargarDatosAvion(id) {
     // 3. Rellenamos la barra superior
     document.getElementById('indicador-avion').textContent = perfil.nombre;
 
-    /* --- AQUÍ EMPIEZA LA MAGIA AUTOMÁTICA --- */
+    /* --- AQUÍ EMPIEZA LA MAGIA AUTOMÁTICA (MODIFICADO) --- */
 
-    // A) Generar CHECKLIST
+    // A) Generar CHECKLIST (Todas las fases)
     const containerCheck = document.getElementById('checklist-container');
     const tituloCheck = document.getElementById('titulo-checklist');
     
     // Limpiamos lo anterior
     containerCheck.innerHTML = ''; 
-    tituloCheck.textContent = perfil.nombre + ": Arranque";
+    // Cambiamos el título para que sea genérico
+    tituloCheck.textContent = perfil.nombre + ": Procedimientos";
 
-    // Si el JSON tiene checklist, la creamos
-    if (perfil.checklist_arranque) {
-        perfil.checklist_arranque.forEach((paso, index) => {
-            const div = document.createElement('div');
-            div.className = 'check-row';
-            // Creamos el HTML de cada línea
-            div.innerHTML = `
-                <input type="checkbox" id="chk_${index}">
-                <label for="chk_${index}">
-                    ${paso.item} <span>${paso.estado}</span>
-                </label>
-            `;
-            containerCheck.appendChild(div);
+    // Verificamos si existe el objeto 'checklists' en el JSON nuevo
+    if (perfil.checklists) {
+        
+        // Recorremos cada fase (clave) y sus pasos (valor)
+        // Ejemplo: faseKey = "puesta_en_marcha", pasos = ["Mezcla - Rica", ...]
+        Object.entries(perfil.checklists).forEach(([faseKey, pasos], faseIndex) => {
+
+            // 1. Crear un Título para la fase (Ej: PUESTA EN MARCHA)
+            const h3 = document.createElement('h3');
+            h3.textContent = formatearTitulo(faseKey);
+            h3.style.marginTop = "20px";
+            h3.style.borderBottom = "2px solid #ff9800"; // Un toque visual naranjita
+            h3.style.paddingBottom = "5px";
+            containerCheck.appendChild(h3);
+
+            // 2. Crear los checkboxes para esa fase
+            pasos.forEach((pasoTexto, pasoIndex) => {
+                const div = document.createElement('div');
+                div.className = 'check-row';
+                
+                // Generamos un ID único para cada checkbox (fase + indice)
+                const uniqueID = `chk_${faseIndex}_${pasoIndex}`;
+
+                // Procesamos el texto: "Frenos - PUESTOS"
+                // Separamos por el guion para poner negrita
+                let itemHTML = pasoTexto;
+                if (pasoTexto.includes('-')) {
+                    const partes = pasoTexto.split('-');
+                    // Parte izquierda (Item) en negrita, parte derecha (Acción) normal
+                    itemHTML = `<strong>${partes[0].trim()}</strong> <span>- ${partes.slice(1).join('-').trim()}</span>`;
+                }
+
+                // Creamos el HTML
+                div.innerHTML = `
+                    <input type="checkbox" id="${uniqueID}">
+                    <label for="${uniqueID}">
+                        ${itemHTML}
+                    </label>
+                `;
+                containerCheck.appendChild(div);
+            });
         });
+    } else {
+        containerCheck.innerHTML = '<p>No se encontraron checklists para este avión.</p>';
     }
 
     // B) Generar FICHA TÉCNICA (Velocidades)
@@ -92,11 +123,19 @@ async function cargarDatosAvion(id) {
     }
 }
 
+// Función auxiliar para poner bonitos los títulos (ej: "antes_del_vuelo" -> "Antes Del Vuelo")
+function formatearTitulo(texto) {
+    return texto
+        .replace(/_/g, ' ')
+        .replace(/\b\w/g, l => l.toUpperCase());
+}
+
 function iniciarReloj() {
     setInterval(() => {
         const ahora = new Date();
         const texto = ahora.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        document.getElementById('reloj-local').textContent = texto;
+        const reloj = document.getElementById('reloj-local');
+        if(reloj) reloj.textContent = texto;
     }, 1000);
 }
 
