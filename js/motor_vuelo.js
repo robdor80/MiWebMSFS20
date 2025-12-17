@@ -58,3 +58,36 @@ function iniciarReloj() {
         document.getElementById('reloj-local').textContent = texto;
     }, 1000);
 }
+
+/* --- FUNCIONES PANEL CENTRAL --- */
+
+function switchTab(tabName) {
+    // 1. Obtener los paneles
+    const checklist = document.getElementById('tab-checklist');
+    const ficha = document.getElementById('tab-ficha');
+
+    // 2. Mostrar/Ocultar paneles
+    if (tabName === 'checklist') {
+        checklist.classList.remove('hidden');
+        ficha.classList.add('hidden');
+    } else {
+        checklist.classList.add('hidden');
+        ficha.classList.remove('hidden');
+    }
+
+    // 3. Gestionar estado visual de los botones
+    const btns = document.querySelectorAll('.toggle-wrapper .tab-btn');
+    if (tabName === 'checklist') {
+        btns[0].classList.add('active');
+        btns[1].classList.remove('active');
+    } else {
+        btns[0].classList.remove('active');
+        btns[1].classList.add('active');
+    }
+}
+
+function resetChecklist() {
+    // Busca todos los checkboxes dentro del panel y los desmarca
+    document.querySelectorAll('#tab-checklist input[type="checkbox"]')
+        .forEach(cb => cb.checked = false);
+}
