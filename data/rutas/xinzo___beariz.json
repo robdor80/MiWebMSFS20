@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "nombre": "Xinzo - Beariz",
+    "fecha": "2025-12-23",
+    "hora_estimada": "10:00",
+    "meteo_prevista": "Soleado",
+    "notas": "Generada con MiWebMSFS20"
+  },
+  "tramos": [
+    {
+      "id": 1,
+      "tipo": "DESPEGUE",
+      "punto_inicio": "Xinzo",
+      "punto_fin": "Castro Caldelas",
+      "rumbo": "122º",
+      "altitud": "500ft",
+      "tiempo": "15 min",
+      "velocidad": "70 kts",
+      "instruccion": "Despegamos y seguimos ruta hacia Castro Caldelas hasta ver el castillo"
+    },
+    {
+      "id": 2,
+      "tipo": "CRUCERO",
+      "punto_inicio": "Castro Caldelas",
+      "punto_fin": "Monforte de Lemos",
+      "rumbo": "234º",
+      "altitud": "3500 ft",
+      "tiempo": "12",
+      "velocidad": "80 kts",
+      "instruccion": "Seguimos rumbo hasta ver Parador"
+    },
+    {
+      "id": 3,
+      "tipo": "CRUCERO",
+      "punto_inicio": "Monforte de Lemos",
+      "punto_fin": "Beariz",
+      "rumbo": "256º",
+      "altitud": "3500 ft",
+      "tiempo": "25",
+      "velocidad": "80 kts",
+      "instruccion": "Seguimos hasta ver la pista de aterizaje de Beariz"
+    },
+    {
+      "id": 4,
+      "tipo": "ATERRIZAJE",
+      "punto_inicio": "Beariz",
+      "punto_fin": "Pista de Beariz",
+      "rumbo": "015º",
+      "altitud": "500ft",
+      "tiempo": "3",
+      "velocidad": "55 kts",
+      "instruccion": "Aterrizamos"
+    }
+  ]
+}
