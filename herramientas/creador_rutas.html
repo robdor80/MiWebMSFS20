@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creador de Rutas VFR | MiWebMSFS20</title>
+    <title>Planificador de Rutas VFR | MiWebMSFS20</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* ESTILOS BÁSICOS MODO OSCURO */
+        /* ESTILOS MODO OSCURO */
         body {
             background-color: #121418;
             color: #ddd;
-            font-family: sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -20,95 +20,126 @@
 
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             background-color: #1e222d;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
-        h1, h2 { color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        h1 { color: #fff; border-bottom: 2px solid #333; padding-bottom: 15px; margin-top: 0; display: flex; align-items: center; gap: 10px; }
         h1 i { color: #4a90e2; }
+        h2 { color: #aaa; font-size: 1.1rem; margin-top: 25px; border-left: 4px solid #4a90e2; padding-left: 10px; }
 
-        /* INPUTS Y FORMULARIOS */
+        /* INPUTS */
         .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; color: #aaa; font-size: 0.9rem; }
+        label { display: block; margin-bottom: 5px; color: #888; font-size: 0.9rem; font-weight: bold; }
         
         input, select, textarea {
             width: 100%;
-            padding: 10px;
-            background: #252a36;
+            padding: 12px;
+            background: #111;
             border: 1px solid #444;
             color: #fff;
-            border-radius: 4px;
-            box-sizing: border-box; /* Para que el padding no rompa el ancho */
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: 0.2s;
         }
-        input:focus { outline: none; border-color: #4a90e2; }
+        input:focus, select:focus, textarea:focus { 
+            outline: none; border-color: #4a90e2; background: #1a1a1a;
+        }
 
-        /* CAJA DE TRAMOS */
+        /* LISTA DE TRAMOS */
         #lista-tramos {
-            margin-top: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .tramo-item {
-            background: #2a2e3a;
+            background: #252a36;
             padding: 15px;
-            border-left: 4px solid #4a90e2;
-            border-radius: 4px;
+            border-radius: 6px;
             position: relative;
-            animation: fadeIn 0.3s ease;
-        }
-        .tramo-item.despegue { border-left-color: #ff9800; }
-        .tramo-item.aterrizaje { border-left-color: #4caf50; }
-
-        .tramo-header {
+            border-left: 5px solid #555;
             display: flex;
             justify-content: space-between;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #fff;
+            align-items: center;
         }
+        .tramo-item.DESPEGUE { border-left-color: #ff9800; }
+        .tramo-item.ATERRIZAJE { border-left-color: #4caf50; }
+        .tramo-item.CRUCERO { border-left-color: #4a90e2; }
+
+        .tramo-info strong { color: #fff; font-size: 1.1rem; }
+        .tramo-detalles { font-size: 0.85rem; color: #aaa; margin-top: 5px; }
+        .tramo-detalles span { margin-right: 15px; }
+        .tramo-detalles i { color: #4a90e2; width: 20px; text-align: center; }
 
         /* BOTONES */
         .btn {
-            padding: 10px 20px;
+            padding: 12px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.2s;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
+            gap: 8px;
+            font-size: 1rem;
+            transition: 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .btn-add { background: #444; color: #fff; width: 100%; justify-content: center; margin-top: 10px; }
-        .btn-add:hover { background: #555; }
+        .btn-add { background: #333; color: #fff; width: 100%; border: 2px dashed #444; }
+        .btn-add:hover { background: #444; border-color: #666; }
 
-        .btn-save { background: #4caf50; color: #fff; width: 100%; justify-content: center; margin-top: 20px; font-size: 1.1rem; padding: 15px;}
-        .btn-save:hover { background: #45a049; }
+        .btn-save { background: linear-gradient(to right, #2ecc71, #27ae60); color: #fff; width: 100%; margin-top: 30px; padding: 15px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3); }
+        .btn-save:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4); }
 
-        .btn-delete { background: #e74c3c; color: white; padding: 5px 10px; font-size: 0.8rem; }
-        
-        /* Grid para poner inputs lado a lado */
-        .row { display: flex; gap: 10px; }
+        .btn-delete { background: none; color: #e74c3c; font-size: 1.2rem; padding: 5px; }
+        .btn-delete:hover { color: #ff6b6b; transform: scale(1.1); }
+
+        .row { display: flex; gap: 15px; }
         .col { flex: 1; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* --- MODAL (VENTANA FLOTANTE) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+            opacity: 0; pointer-events: none; transition: 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+
+        .modal-content {
+            background: #1e222d; width: 90%; max-width: 500px;
+            padding: 25px; border-radius: 10px;
+            border: 1px solid #444;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            transform: translateY(20px); transition: 0.3s;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+
+        .modal-footer { margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end; }
+        .btn-cancel { background: #444; color: #ccc; }
+        .btn-confirm { background: #4a90e2; color: #fff; }
+
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1><i class="fas fa-map-marked-alt"></i> Planificador de Rutas VFR</h1>
+        <h1><i class="fas fa-route"></i> Planificador de Rutas VFR</h1>
 
         <section>
-            <h2>1. Datos del Vuelo</h2>
+            <h2><i class="fas fa-info-circle"></i> Datos Generales</h2>
             <div class="form-group">
-                <label>Nombre de la Ruta (ej: Vigo - Santiago)</label>
-                <input type="text" id="meta-nombre" placeholder="Origen - Destino">
+                <label>Nombre de la Ruta</label>
+                <input type="text" id="meta-nombre" placeholder="Ej: Vigo (LEVX) - Santiago (LEST)">
             </div>
             <div class="row">
                 <div class="col form-group">
@@ -116,141 +147,208 @@
                     <input type="date" id="meta-fecha">
                 </div>
                 <div class="col form-group">
-                    <label>Hora Estimada</label>
+                    <label>Hora Salida</label>
                     <input type="time" id="meta-hora" value="10:00">
                 </div>
             </div>
             <div class="form-group">
-                <label>Meteorología Prevista</label>
-                <input type="text" id="meta-meteo" placeholder="ej: CAVOK, Viento 360/10">
+                <label>Meteorología (METAR)</label>
+                <input type="text" id="meta-meteo" placeholder="Ej: CAVOK, Viento 360/10 KT">
             </div>
         </section>
 
         <section>
-            <h2>2. Tramos de Navegación</h2>
+            <h2><i class="fas fa-map-marker-alt"></i> Tramos de Navegación</h2>
             
             <div id="lista-tramos">
-                <p style="text-align:center; color:#666; font-style:italic;" id="msg-vacio">
-                    No hay tramos. Pulsa abajo para añadir el despegue.
+                <p style="text-align:center; color:#555; font-style:italic; padding: 20px;">
+                    No hay tramos añadidos.
                 </p>
             </div>
 
-            <button class="btn btn-add" onclick="abrirModalTramo()">
-                <i class="fas fa-plus-circle"></i> AÑADIR NUEVO TRAMO
+            <button class="btn btn-add" onclick="abrirModal()">
+                <i class="fas fa-plus"></i> Añadir Tramo
             </button>
         </section>
 
         <button class="btn btn-save" onclick="generarJSON()">
-            <i class="fas fa-save"></i> DESCARGAR ARCHIVO DE RUTA (.JSON)
+            <i class="fas fa-file-download"></i> DESCARGAR ARCHIVO DE RUTA (.JSON)
         </button>
         
-        <br><br>
-        <a href="../vfr/vuelo.html" style="color:#666; text-decoration:none;">&larr; Volver al Simulador</a>
+        <p style="text-align:center; margin-top:20px;">
+            <a href="../vfr/vuelo.html" style="color:#666; text-decoration:none; font-size:0.9rem;">
+                &larr; Volver al Simulador
+            </a>
+        </p>
+    </div>
+
+    <div class="modal-overlay" id="modal-tramo">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:#fff;">Nuevo Tramo</h3>
+            
+            <div class="form-group">
+                <label>Tipo de Tramo</label>
+                <select id="t-tipo">
+                    <option value="CRUCERO">✈️ CRUCERO (En ruta)</option>
+                    <option value="DESPEGUE">🛫 DESPEGUE</option>
+                    <option value="ATERRIZAJE">🛬 ATERRIZAJE</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col form-group">
+                    <label>Desde</label>
+                    <input type="text" id="t-inicio" placeholder="Punto A">
+                </div>
+                <div class="col form-group">
+                    <label>Hasta</label>
+                    <input type="text" id="t-fin" placeholder="Punto B">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col form-group">
+                    <label>Rumbo (°)</label>
+                    <input type="text" id="t-rumbo" placeholder="360°">
+                </div>
+                <div class="col form-group">
+                    <label>Altitud</label>
+                    <input type="text" id="t-altitud" placeholder="3500 ft">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col form-group">
+                    <label>Velocidad</label>
+                    <input type="text" id="t-velocidad" placeholder="80 kts">
+                </div>
+                <div class="col form-group">
+                    <label>Tiempo</label>
+                    <input type="text" id="t-tiempo" placeholder="10 min">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Instrucciones / Notas</label>
+                <input type="text" id="t-instruccion" placeholder="Referencia visual...">
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-cancel" onclick="cerrarModal()">Cancelar</button>
+                <button class="btn btn-confirm" onclick="guardarTramo()">Guardar Tramo</button>
+            </div>
+        </div>
     </div>
 
     <script>
-        let tramos = []; // Aquí guardaremos los datos en memoria
+        let tramos = []; 
 
-        // 1. Simulación de abrir ventana para añadir datos (por ahora usamos prompts para probar rápido)
-        function abrirModalTramo() {
-            // En el siguiente paso haremos un modal bonito, 
-            // ahora vamos a pedir datos rápidos para ver si funciona la lógica.
+        // --- FUNCIONES DEL MODAL ---
+        function abrirModal() {
+            // Limpiar campos
+            document.getElementById('t-inicio').value = '';
+            document.getElementById('t-fin').value = '';
+            document.getElementById('t-rumbo').value = '';
+            document.getElementById('t-instruccion').value = '';
+            // Mostrar modal
+            document.getElementById('modal-tramo').classList.add('active');
+            // Foco al primer campo
+            document.getElementById('t-tipo').focus();
+        }
+
+        function cerrarModal() {
+            document.getElementById('modal-tramo').classList.remove('active');
+        }
+
+        function guardarTramo() {
+            // Recoger datos
+            const tipo = document.getElementById('t-tipo').value;
+            const inicio = document.getElementById('t-inicio').value || "N/A";
+            const fin = document.getElementById('t-fin').value || "N/A";
             
-            const tipo = prompt("Tipo de tramo? (DESPEGUE, CRUCERO, ATERRIZAJE)", "CRUCERO");
-            if(!tipo) return;
-
-            const puntoA = prompt("Punto Inicio (ej: Vigo):");
-            const puntoB = prompt("Punto Fin (ej: Pontevedra):");
-            const altitud = prompt("Altitud (ej: 3500 ft):", "3500 ft");
-            const velocidad = prompt("Velocidad (ej: 80 kts):", "80 kts");
-            const tiempo = prompt("Tiempo estimado (ej: 12 min):");
-            const rumbo = prompt("Rumbo Magnético (ej: 360°):");
-            const instruccion = prompt("Instrucciones / Notas:");
-
-            // Creamos el objeto tramo
             const nuevoTramo = {
                 id: tramos.length + 1,
-                tipo: tipo.toUpperCase(),
-                punto_inicio: puntoA,
-                punto_fin: puntoB,
-                rumbo: rumbo,
-                altitud: altitud,
-                tiempo: tiempo,
-                velocidad: velocidad,
-                instruccion: instruccion || ""
+                tipo: tipo,
+                punto_inicio: inicio,
+                punto_fin: fin,
+                rumbo: document.getElementById('t-rumbo').value || "N/A",
+                altitud: document.getElementById('t-altitud').value || "3500 ft",
+                velocidad: document.getElementById('t-velocidad').value || "80 kts",
+                tiempo: document.getElementById('t-tiempo').value || "-",
+                instruccion: document.getElementById('t-instruccion').value || ""
             };
 
             tramos.push(nuevoTramo);
             renderizarTramos();
+            cerrarModal();
         }
 
-        // 2. Pintar los tramos en la pantalla
+        // --- RENDERIZADO ---
         function renderizarTramos() {
             const contenedor = document.getElementById('lista-tramos');
-            contenedor.innerHTML = ''; // Limpiar
+            contenedor.innerHTML = ''; 
 
             if (tramos.length === 0) {
-                contenedor.innerHTML = '<p style="text-align:center; color:#666;" id="msg-vacio">No hay tramos.</p>';
+                contenedor.innerHTML = '<p style="text-align:center; color:#555; padding:20px;">No hay tramos.</p>';
                 return;
             }
 
             tramos.forEach((tramo, index) => {
                 const div = document.createElement('div');
-                div.className = `tramo-item ${tramo.tipo.toLowerCase()}`; // Para colores según tipo
+                div.className = `tramo-item ${tramo.tipo}`;
                 
                 div.innerHTML = `
-                    <div class="tramo-header">
-                        <span>#${index + 1} ${tramo.tipo}</span>
-                        <span style="color:#f1c40f">${tramo.rumbo || 'N/A'}</span>
+                    <div class="tramo-info">
+                        <div style="font-size:0.8rem; font-weight:bold; color:#888; margin-bottom:5px;">#${index+1} ${tramo.tipo}</div>
+                        <strong>${tramo.punto_inicio} &rarr; ${tramo.punto_fin}</strong>
+                        
+                        <div class="tramo-detalles">
+                            <span><i class="fas fa-compass"></i> ${tramo.rumbo}</span>
+                            <span><i class="fas fa-arrows-alt-v"></i> ${tramo.altitud}</span>
+                            <span><i class="fas fa-tachometer-alt"></i> ${tramo.velocidad}</span>
+                            <span><i class="far fa-clock"></i> ${tramo.tiempo}</span>
+                        </div>
+                        <div style="font-size:0.85rem; color:#aaa; margin-top:5px; font-style:italic;">"${tramo.instruccion}"</div>
                     </div>
-                    <div class="row" style="margin-bottom:5px;">
-                        <div class="col"><strong>${tramo.punto_inicio}</strong> &rarr; <strong>${tramo.punto_fin}</strong></div>
-                    </div>
-                    <div class="row" style="font-size:0.85rem; color:#aaa;">
-                        <div class="col"><i class="fas fa-arrows-alt-v"></i> ${tramo.altitud}</div>
-                        <div class="col"><i class="fas fa-tachometer-alt"></i> ${tramo.velocidad}</div>
-                        <div class="col"><i class="far fa-clock"></i> ${tramo.tiempo}</div>
-                    </div>
-                    <div style="margin-top:5px; font-style:italic; font-size:0.8rem; color:#888;">
-                        "${tramo.instruccion}"
-                    </div>
+                    <button class="btn btn-delete" onclick="borrarTramo(${index})" title="Borrar"><i class="fas fa-times"></i></button>
                 `;
                 contenedor.appendChild(div);
             });
         }
 
-        // 3. Generar y Descargar el JSON
-        function generarJSON() {
-            const nombre = document.getElementById('meta-nombre').value || "Ruta Sin Nombre";
-            const fecha = document.getElementById('meta-fecha').value;
-            const hora = document.getElementById('meta-hora').value;
-            const meteo = document.getElementById('meta-meteo').value;
+        function borrarTramo(index) {
+            tramos.splice(index, 1);
+            renderizarTramos();
+        }
 
-            // Construimos la estructura final igual que la que hicimos manual
+        // --- GENERAR JSON ---
+        function generarJSON() {
+            const nombre = document.getElementById('meta-nombre').value;
+            if(!nombre) { alert("¡Ponle nombre a la ruta!"); return; }
+
             const rutaFinal = {
                 meta: {
                     nombre: nombre,
-                    fecha: fecha,
-                    hora_estimada: hora,
-                    meteo_prevista: meteo,
+                    fecha: document.getElementById('meta-fecha').value,
+                    hora_estimada: document.getElementById('meta-hora').value,
+                    meteo_prevista: document.getElementById('meta-meteo').value,
                     notas: "Generada con MiWebMSFS20"
                 },
                 tramos: tramos
             };
 
-            // Convertir a texto JSON
             const jsonString = JSON.stringify(rutaFinal, null, 2);
-
-            // Crear un "link fantasma" para forzar la descarga
             const blob = new Blob([jsonString], { type: "application/json" });
             const url = URL.createObjectURL(blob);
             
             const a = document.createElement('a');
             a.href = url;
-            // Limpiamos el nombre para el archivo (ej: "Vigo - Santiago" -> "vigo_santiago.json")
-            const nombreArchivo = nombre.toLowerCase().replace(/[^a-z0-9]/g, '_') + ".json";
+            // Limpiar nombre para el archivo
+            const nombreArchivo = nombre.toLowerCase()
+                .replace(/ /g, '_')
+                .replace(/[^a-z0-9_]/g, '') + ".json";
+                
             a.download = nombreArchivo;
-            
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
