@@ -229,13 +229,20 @@ body.modo-vuelo {
     padding-top: 5px;
 }
 
-/* --- MÓDULO 3 (MANDO) --- */
+/* ESTILO "KNEEBOARD" (Papel físico) */
 #modulo-mando img {
-    filter: invert(1) contrast(1.1); 
-    mix-blend-mode: screen; 
+    /* No invertimos colores, pero... */
+    
+    /* 1. Le bajamos el brillo al 85% para que no deslumbre */
+    /* 2. Le damos un pelín de sepia (0.2) para que parezca papel cálido/viejo y no luz de monitor */
+    filter: brightness(0.85) sepia(0.2);
+    
+    /* Ajustes de tamaño */
     width: 100%;
     height: auto;
-    opacity: 0.9;
-    border-radius: 8px;
     display: block;
+    border-radius: 6px;
+    
+    /* Sombra para que parezca un papel puesto encima */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
