@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="../css/vuelo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body class="modo-vuelo">
 
     <header class="top-bar">
@@ -21,40 +23,46 @@
     </header>
 
     <main class="cockpit-container">
-        
+
         <section id="slot-izq" class="slot">
             <div class="slot-header">
                 <span>NavLog VFR <i class="fas fa-map-marked-alt"></i></span>
-                
+
                 <div style="display:flex; gap:5px;">
-                    <a href="../herramientas/creador_rutas.html" target="_blank" title="Crear Nueva Ruta" style="text-decoration:none; color:#aaa;">
+                    <a href="../herramientas/creador_rutas.html" target="_blank" title="Crear Nueva Ruta"
+                        style="text-decoration:none; color:#aaa;">
                         <i class="fas fa-plus-square"></i>
                     </a>
-                    
-                    <label for="input-ruta-local" title="Cargar ruta desde archivo .json" style="cursor:pointer; color:#aaa;">
+
+                    <label for="input-ruta-local" title="Cargar ruta desde archivo .json"
+                        style="cursor:pointer; color:#aaa;">
                         <i class="fas fa-folder-open"></i>
                     </label>
-                    <input type="file" id="input-ruta-local" accept=".json" style="display:none;" onchange="cargarRutaDesdePC(this)">
+                    <input type="file" id="input-ruta-local" accept=".json" style="display:none;"
+                        onchange="cargarRutaDesdePC(this)">
                 </div>
             </div>
-            
+
             <div class="slot-content" id="contenido-izq" style="padding: 0;">
-                
+
                 <div style="padding:5px; background:#222; border-bottom:1px solid #333;">
-                    <select id="selector-ruta" onchange="cargarRutaSeleccionada(this.value)" style="width:100%; background:#333; color:#fff; border:none; padding:5px; border-radius:4px;">
-                        <option value="">-- Rutas de Ejemplo --</option>
+                    <select id="selector-ruta" onchange="cargarRutaSeleccionada(this.value)" ...>
+                        <option value="">-- Mis rutas --</option>
                         <option value="vigo_santiago">Vigo - Santiago</option>
+
+                        <option value="xinzo_beariz">Xinzo - Beariz</option>
                     </select>
                 </div>
 
-                <div id="info-ruta-header" class="hidden" style="padding:10px; background:#222; border-bottom:1px solid #444;">
+                <div id="info-ruta-header" class="hidden"
+                    style="padding:10px; background:#222; border-bottom:1px solid #444;">
                     <h3 id="ruta-nombre" style="color:#4caf50; font-size:1rem; margin:0;"></h3>
                     <div style="font-size:0.8rem; color:#aaa; margin-top:5px;">
                         <span id="ruta-meteo"></span>
                     </div>
                 </div>
 
-                <div id="container-tramos" style="padding:10px;"> 
+                <div id="container-tramos" style="padding:10px;">
                     <p class="placeholder">
                         Selecciona una ruta arriba<br>
                         o pulsa <i class="fas fa-folder-open"></i> para cargar tu JSON.
@@ -77,11 +85,11 @@
             </div>
 
             <div class="slot-content" id="contenido-cen">
-                
+
                 <div id="tab-checklist" class="tab-content">
                     <h3 id="titulo-checklist">Checklist</h3>
                     <div id="checklist-container"></div>
-                    
+
                     <button class="btn-reset" onclick="resetChecklist()">
                         <i class="fas fa-undo"></i> Limpiar Checklist
                     </button>
@@ -91,13 +99,13 @@
                     <h3>Velocidades (KIAS)</h3>
                     <table class="tabla-datos">
                         <tbody id="tabla-velocidades">
-                            </tbody>
+                        </tbody>
                     </table>
-                    
+
                     <h3 style="margin-top:1rem">Motor & Fuel</h3>
                     <table class="tabla-datos">
                         <tbody id="tabla-motor">
-                            </tbody>
+                        </tbody>
                     </table>
                 </div>
 
@@ -117,27 +125,112 @@
     </main>
 
     <style>
-        .header-con-tabs { display: flex; justify-content: space-between; align-items: center; padding: 5px 10px; background: #2a2a2a; }
-        .toggle-wrapper { display: flex; gap: 5px; background: #111; padding: 3px; border-radius: 5px; }
-        .tab-btn { background: transparent; border: none; color: #777; padding: 5px 10px; cursor: pointer; font-weight: bold; border-radius: 3px; transition: 0.2s; }
-        .tab-btn.active { background: #007bff; color: white; }
-        .hidden { display: none !important; }
-        
-        .check-row { background: rgba(255,255,255,0.05); margin-bottom: 4px; padding: 8px; display: flex; align-items: center; border-left: 3px solid transparent; }
-        .check-row:has(input:checked) { border-left-color: #4caf50; opacity: 0.5; text-decoration: line-through; }
-        .check-row label { flex: 1; margin-left: 10px; display: flex; justify-content: space-between; cursor: pointer; }
-        .check-row span { color: #f1c40f; font-weight: bold; }
+        .header-con-tabs {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 10px;
+            background: #2a2a2a;
+        }
 
-        .tabla-datos { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        .tabla-datos td { border-bottom: 1px solid #444; padding: 5px; }
-        .tabla-datos .num { text-align: right; color: #4caf50; font-family: monospace; font-size: 1.1em;}
-        .btn-reset { width: 100%; margin-top: 15px; padding: 8px; background: #333; color: white; border: 1px solid #555; cursor: pointer; }
-        
+        .toggle-wrapper {
+            display: flex;
+            gap: 5px;
+            background: #111;
+            padding: 3px;
+            border-radius: 5px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #777;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 3px;
+            transition: 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .check-row {
+            background: rgba(255, 255, 255, 0.05);
+            margin-bottom: 4px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            border-left: 3px solid transparent;
+        }
+
+        .check-row:has(input:checked) {
+            border-left-color: #4caf50;
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+
+        .check-row label {
+            flex: 1;
+            margin-left: 10px;
+            display: flex;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .check-row span {
+            color: #f1c40f;
+            font-weight: bold;
+        }
+
+        .tabla-datos {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .tabla-datos td {
+            border-bottom: 1px solid #444;
+            padding: 5px;
+        }
+
+        .tabla-datos .num {
+            text-align: right;
+            color: #4caf50;
+            font-family: monospace;
+            font-size: 1.1em;
+        }
+
+        .btn-reset {
+            width: 100%;
+            margin-top: 15px;
+            padding: 8px;
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            cursor: pointer;
+        }
+
         /* Ajuste para que los botones de config se vean transparentes */
-        .btn-config { background: none; border: none; color: #666; cursor: pointer; }
-        .btn-config:hover { color: #fff; }
+        .btn-config {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .btn-config:hover {
+            color: #fff;
+        }
     </style>
 
     <script src="../js/motor_vuelo.js"></script>
 </body>
+
 </html>
