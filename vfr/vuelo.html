@@ -6,6 +6,7 @@
     <title>Vuelo VFR | MiWebMSFS20</title>
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="../css/vuelo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="modo-vuelo">
 
@@ -23,8 +24,8 @@
         
         <section id="slot-izq" class="slot">
             <div class="slot-header">
-                <span>MÓDULO 1</span>
-                <button class="btn-config">⚙</button>
+                <span>Info Vuelo</span>
+                <button class="btn-config"><i class="fas fa-cog"></i></button>
             </div>
             <div class="slot-content" id="contenido-izq">
                 <p class="placeholder">Vacío</p>
@@ -35,13 +36,13 @@
             <div class="slot-header header-con-tabs">
                 <div class="toggle-wrapper">
                     <button class="tab-btn active" onclick="switchTab('checklist')">
-                        ✅ Checklist
+                        <i class="fas fa-clipboard-check"></i> Checklist
                     </button>
                     <button class="tab-btn" onclick="switchTab('ficha')">
-                        ✈️ Ficha
+                        <i class="fas fa-plane"></i> Ficha
                     </button>
                 </div>
-                <button class="btn-config">⚙</button>
+                <button class="btn-config"><i class="fas fa-cog"></i></button>
             </div>
 
             <div class="slot-content" id="contenido-cen">
@@ -50,7 +51,9 @@
                     <h3 id="titulo-checklist">Checklist</h3>
                     <div id="checklist-container"></div>
                     
-                    <button class="btn-reset" onclick="resetChecklist()">🔄 Limpiar Checklist</button>
+                    <button class="btn-reset" onclick="resetChecklist()">
+                        <i class="fas fa-undo"></i> Limpiar Checklist
+                    </button>
                 </div>
 
                 <div id="tab-ficha" class="tab-content hidden">
@@ -72,11 +75,11 @@
 
         <section id="slot-der" class="slot">
             <div class="slot-header">
-                <span>MÓDULO 3</span>
-                <button class="btn-config">⚙</button>
+                <span>Configuración Mando <i class="fas fa-gamepad"></i></span>
+                <button class="btn-config"><i class="fas fa-cog"></i></button>
             </div>
-            <div class="slot-content" id="contenido-der">
-                <p class="placeholder">Vacío</p>
+            <div class="slot-content" id="modulo-mando">
+                <p class="placeholder">Cargando esquema...</p>
             </div>
         </section>
 
@@ -98,6 +101,10 @@
         .tabla-datos td { border-bottom: 1px solid #444; padding: 5px; }
         .tabla-datos .num { text-align: right; color: #4caf50; font-family: monospace; font-size: 1.1em;}
         .btn-reset { width: 100%; margin-top: 15px; padding: 8px; background: #333; color: white; border: 1px solid #555; cursor: pointer; }
+        
+        /* Ajuste para que los botones de config se vean transparentes */
+        .btn-config { background: none; border: none; color: #666; cursor: pointer; }
+        .btn-config:hover { color: #fff; }
     </style>
 
     <script src="../js/motor_vuelo.js"></script>
