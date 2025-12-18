@@ -22,25 +22,43 @@
 
     <main class="cockpit-container">
         
-       <section id="slot-izq" class="slot">
+        <section id="slot-izq" class="slot">
             <div class="slot-header">
                 <span>NavLog VFR <i class="fas fa-map-marked-alt"></i></span>
-                <select id="selector-ruta" onchange="cargarRutaSeleccionada(this.value)" style="background:#333; color:#fff; border:none; padding:2px;">
-                    <option value="">-- Cargar Ruta --</option>
-                    <option value="vigo_santiago">Vigo - Santiago</option>
-                    </select>
+                
+                <div style="display:flex; gap:5px;">
+                    <a href="../herramientas/creador_rutas.html" target="_blank" title="Crear Nueva Ruta" style="text-decoration:none; color:#aaa;">
+                        <i class="fas fa-plus-square"></i>
+                    </a>
+                    
+                    <label for="input-ruta-local" title="Cargar ruta desde archivo .json" style="cursor:pointer; color:#aaa;">
+                        <i class="fas fa-folder-open"></i>
+                    </label>
+                    <input type="file" id="input-ruta-local" accept=".json" style="display:none;" onchange="cargarRutaDesdePC(this)">
+                </div>
             </div>
             
             <div class="slot-content" id="contenido-izq" style="padding: 0;">
+                
+                <div style="padding:5px; background:#222; border-bottom:1px solid #333;">
+                    <select id="selector-ruta" onchange="cargarRutaSeleccionada(this.value)" style="width:100%; background:#333; color:#fff; border:none; padding:5px; border-radius:4px;">
+                        <option value="">-- Rutas de Ejemplo --</option>
+                        <option value="vigo_santiago">Vigo - Santiago</option>
+                    </select>
+                </div>
+
                 <div id="info-ruta-header" class="hidden" style="padding:10px; background:#222; border-bottom:1px solid #444;">
-                    <h3 id="ruta-nombre" style="color:#4caf50; font-size:1rem;"></h3>
-                    <div style="font-size:0.8rem; color:#aaa; display:flex; justify-content:space-between; margin-top:5px;">
+                    <h3 id="ruta-nombre" style="color:#4caf50; font-size:1rem; margin:0;"></h3>
+                    <div style="font-size:0.8rem; color:#aaa; margin-top:5px;">
                         <span id="ruta-meteo"></span>
                     </div>
                 </div>
 
-                <div id="container-tramos" style="padding:10px; padding-bottom: 100px;"> 
-                    <p class="placeholder">Selecciona una ruta arriba</p>
+                <div id="container-tramos" style="padding:10px;"> 
+                    <p class="placeholder">
+                        Selecciona una ruta arriba<br>
+                        o pulsa <i class="fas fa-folder-open"></i> para cargar tu JSON.
+                    </p>
                 </div>
             </div>
         </section>

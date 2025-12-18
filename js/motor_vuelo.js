@@ -36,50 +36,39 @@ async function cargarDatosAvion(id) {
     const indicador = document.getElementById('indicador-avion');
     if (indicador) indicador.textContent = perfil.nombre;
 
-    /* --- AQUÍ EMPIEZA LA MAGIA AUTOMÁTICA --- */
+    /* --- GENERACIÓN DINÁMICA DE CONTENIDO --- */
 
     // A) Generar CHECKLIST (Todas las fases)
     const containerCheck = document.getElementById('checklist-container');
     const tituloCheck = document.getElementById('titulo-checklist');
     
     if (containerCheck && tituloCheck) {
-        // Limpiamos lo anterior
         containerCheck.innerHTML = ''; 
-        // Cambiamos el título para que sea genérico
         tituloCheck.textContent = perfil.nombre + ": Procedimientos";
 
-        // Verificamos si existe el objeto 'checklists' en el JSON nuevo
         if (perfil.checklists) {
-            
-            // Recorremos cada fase (clave) y sus pasos (valor)
             Object.entries(perfil.checklists).forEach(([faseKey, pasos], faseIndex) => {
-
-                // 1. Crear un Título para la fase (Ej: PUESTA EN MARCHA)
+                // Título de la fase
                 const h3 = document.createElement('h3');
                 h3.textContent = formatearTitulo(faseKey);
                 h3.style.marginTop = "20px";
-                h3.style.borderBottom = "2px solid #ff9800"; // Un toque visual naranjita
+                h3.style.borderBottom = "2px solid #ff9800"; 
                 h3.style.paddingBottom = "5px";
-                h3.style.color = "#ddd"; // Color gris claro para que se vea bien en fondo oscuro
+                h3.style.color = "#ddd"; 
                 containerCheck.appendChild(h3);
 
-                // 2. Crear los checkboxes para esa fase
+                // Pasos de la fase
                 pasos.forEach((pasoTexto, pasoIndex) => {
                     const div = document.createElement('div');
                     div.className = 'check-row';
-                    
-                    // Generamos un ID único para cada checkbox (fase + indice)
                     const uniqueID = `chk_${faseIndex}_${pasoIndex}`;
-
-                    // Procesamos el texto: "Frenos - PUESTOS"
+                    
                     let itemHTML = pasoTexto;
                     if (pasoTexto.includes('-')) {
                         const partes = pasoTexto.split('-');
-                        // Parte izquierda (Item) en negrita, parte derecha (Acción) normal
                         itemHTML = `<strong>${partes[0].trim()}</strong> <span>- ${partes.slice(1).join('-').trim()}</span>`;
                     }
 
-                    // Creamos el HTML
                     div.innerHTML = `
                         <input type="checkbox" id="${uniqueID}">
                         <label for="${uniqueID}">
@@ -90,15 +79,14 @@ async function cargarDatosAvion(id) {
                 });
             });
         } else {
-            containerCheck.innerHTML = '<p>No se encontraron checklists para este avión.</p>';
+            containerCheck.innerHTML = '<p>No se encontraron checklists.</p>';
         }
     }
 
     // B) Generar FICHA TÉCNICA (Velocidades)
     const tablaVel = document.getElementById('tabla-velocidades');
     if (tablaVel) {
-        tablaVel.innerHTML = ''; // Limpiar
-
+        tablaVel.innerHTML = ''; 
         if (perfil.ficha_tecnica && perfil.ficha_tecnica.velocidades) {
             perfil.ficha_tecnica.velocidades.forEach(v => {
                 const tr = document.createElement('tr');
@@ -114,8 +102,7 @@ async function cargarDatosAvion(id) {
     // C) Generar FICHA TÉCNICA (Motor)
     const tablaMotor = document.getElementById('tabla-motor');
     if (tablaMotor) {
-        tablaMotor.innerHTML = ''; // Limpiar
-
+        tablaMotor.innerHTML = ''; 
         if (perfil.ficha_tecnica && perfil.ficha_tecnica.info_motor) {
             perfil.ficha_tecnica.info_motor.forEach(m => {
                 const tr = document.createElement('tr');
@@ -128,25 +115,21 @@ async function cargarDatosAvion(id) {
         }
     }
 
-    // D) MÓDULO 3: IMAGEN DEL MANDO (NUEVO)
+    // D) MÓDULO 3: IMAGEN DEL MANDO
     const contenedorMando = document.getElementById('modulo-mando');
     if (contenedorMando) {
-        contenedorMando.innerHTML = ''; // Limpiar el "Vacío"
+        contenedorMando.innerHTML = ''; 
         
-        // Verificamos si en el JSON existe la propiedad "imagen_mando"
         if (perfil.imagen_mando) {
             const img = document.createElement('img');
-            // IMPORTANTE: Añadimos '../' porque el html está en una subcarpeta
             img.src = '../' + perfil.imagen_mando; 
             img.alt = "Configuración de Mando";
             
-            // Estilos para que encaje perfecto
+            // Estilos básicos (el resto va por CSS)
             img.style.width = "100%";
             img.style.height = "auto";
             img.style.display = "block";
-            img.style.borderRadius = "4px";
             
-            // Gestión de errores por si la imagen no carga
             img.onerror = function() {
                 contenedorMando.innerHTML = '<p class="placeholder" style="color:red">Error cargando imagen.</p>';
             };
@@ -158,7 +141,8 @@ async function cargarDatosAvion(id) {
     }
 }
 
-// Función auxiliar para poner bonitos los títulos (ej: "antes_del_vuelo" -> "Antes Del Vuelo")
+// --- FUNCIONES AUXILIARES ---
+
 function formatearTitulo(texto) {
     if (!texto) return "";
     return texto
@@ -175,7 +159,7 @@ function iniciarReloj() {
     }, 1000);
 }
 
-/* --- FUNCIONES DE LOS BOTONES --- */
+/* --- FUNCIONES UI (PESTAÑAS) --- */
 
 function switchTab(tabName) {
     const checklist = document.getElementById('tab-checklist');
@@ -183,7 +167,6 @@ function switchTab(tabName) {
     
     if (!checklist || !ficha) return;
 
-    // Mostrar/Ocultar
     if (tabName === 'checklist') {
         checklist.classList.remove('hidden');
         ficha.classList.add('hidden');
@@ -192,7 +175,6 @@ function switchTab(tabName) {
         ficha.classList.remove('hidden');
     }
 
-    // Iluminar botones
     const btns = document.querySelectorAll('.toggle-wrapper .tab-btn');
     if (btns.length >= 2) {
         if (tabName === 'checklist') {
@@ -214,6 +196,7 @@ function resetChecklist() {
    GESTIÓN DE RUTAS (MÓDULO 1)
    ========================================== */
 
+// 1. Cargar desde servidor (Selector)
 async function cargarRutaSeleccionada(nombreArchivo) {
     if (!nombreArchivo) return;
 
@@ -223,7 +206,6 @@ async function cargarRutaSeleccionada(nombreArchivo) {
     container.innerHTML = '<p class="placeholder">Cargando datos de navegación...</p>';
 
     try {
-        // Asumimos que están en la carpeta data/rutas/
         const respuesta = await fetch(`../data/rutas/${nombreArchivo}.json`);
         if (!respuesta.ok) throw new Error("No se pudo cargar la ruta");
         
@@ -237,31 +219,54 @@ async function cargarRutaSeleccionada(nombreArchivo) {
     }
 }
 
+// 2. Cargar desde PC (Input File) - NUEVO
+function cargarRutaDesdePC(input) {
+    const archivo = input.files[0];
+    if (!archivo) return;
+
+    const lector = new FileReader();
+
+    lector.onload = function(evento) {
+        try {
+            const datos = JSON.parse(evento.target.result);
+            renderizarRuta(datos);
+            
+            // Limpiamos el selector para evitar confusión
+            const selector = document.getElementById('selector-ruta');
+            if(selector) selector.value = "";
+            
+        } catch (error) {
+            console.error("Error leyendo JSON:", error);
+            alert("El archivo no es válido o está dañado.");
+        }
+    };
+
+    lector.readAsText(archivo);
+}
+
+// 3. Pintar en pantalla
 function renderizarRuta(datos) {
-    // 1. Rellenar cabecera
     const headerInfo = document.getElementById('info-ruta-header');
     document.getElementById('ruta-nombre').textContent = datos.meta.nombre;
     document.getElementById('ruta-meteo').innerHTML = `<i class="fas fa-cloud-sun"></i> ${datos.meta.meteo_prevista}`;
     headerInfo.classList.remove('hidden');
 
-    // 2. Generar Tramos
     const container = document.getElementById('container-tramos');
-    container.innerHTML = ''; // Limpiar
+    container.innerHTML = ''; 
 
     datos.tramos.forEach((tramo, index) => {
         const tarjeta = document.createElement('div');
         tarjeta.className = 'tramo-card';
         
-        // Icono según tipo
         let icono = 'fa-arrow-right';
-        let colorBorde = '#444'; // Gris por defecto
+        let colorBorde = '#444'; 
         
         if (tramo.tipo === 'DESPEGUE') { 
             icono = 'fa-plane-departure'; 
-            colorBorde = '#ff9800'; // Naranja
+            colorBorde = '#ff9800'; 
         } else if (tramo.tipo === 'ATERRIZAJE') {
             icono = 'fa-plane-arrival';
-            colorBorde = '#4caf50'; // Verde
+            colorBorde = '#4caf50'; 
         }
 
         tarjeta.style.borderLeft = `4px solid ${colorBorde}`;

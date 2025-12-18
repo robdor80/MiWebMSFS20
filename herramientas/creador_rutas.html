@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creador de Rutas VFR | MiWebMSFS20</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ESTILOS BÁSICOS MODO OSCURO */
+        body {
+            background-color: #121418;
+            color: #ddd;
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #1e222d;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        h1, h2 { color: #fff; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        h1 i { color: #4a90e2; }
+
+        /* INPUTS Y FORMULARIOS */
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; color: #aaa; font-size: 0.9rem; }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            background: #252a36;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 4px;
+            box-sizing: border-box; /* Para que el padding no rompa el ancho */
+        }
+        input:focus { outline: none; border-color: #4a90e2; }
+
+        /* CAJA DE TRAMOS */
+        #lista-tramos {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tramo-item {
+            background: #2a2e3a;
+            padding: 15px;
+            border-left: 4px solid #4a90e2;
+            border-radius: 4px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+        .tramo-item.despegue { border-left-color: #ff9800; }
+        .tramo-item.aterrizaje { border-left-color: #4caf50; }
+
+        .tramo-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        /* BOTONES */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-add { background: #444; color: #fff; width: 100%; justify-content: center; margin-top: 10px; }
+        .btn-add:hover { background: #555; }
+
+        .btn-save { background: #4caf50; color: #fff; width: 100%; justify-content: center; margin-top: 20px; font-size: 1.1rem; padding: 15px;}
+        .btn-save:hover { background: #45a049; }
+
+        .btn-delete { background: #e74c3c; color: white; padding: 5px 10px; font-size: 0.8rem; }
+        
+        /* Grid para poner inputs lado a lado */
+        .row { display: flex; gap: 10px; }
+        .col { flex: 1; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1><i class="fas fa-map-marked-alt"></i> Planificador de Rutas VFR</h1>
+
+        <section>
+            <h2>1. Datos del Vuelo</h2>
+            <div class="form-group">
+                <label>Nombre de la Ruta (ej: Vigo - Santiago)</label>
+                <input type="text" id="meta-nombre" placeholder="Origen - Destino">
+            </div>
+            <div class="row">
+                <div class="col form-group">
+                    <label>Fecha</label>
+                    <input type="date" id="meta-fecha">
+                </div>
+                <div class="col form-group">
+                    <label>Hora Estimada</label>
+                    <input type="time" id="meta-hora" value="10:00">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Meteorología Prevista</label>
+                <input type="text" id="meta-meteo" placeholder="ej: CAVOK, Viento 360/10">
+            </div>
+        </section>
+
+        <section>
+            <h2>2. Tramos de Navegación</h2>
+            
+            <div id="lista-tramos">
+                <p style="text-align:center; color:#666; font-style:italic;" id="msg-vacio">
+                    No hay tramos. Pulsa abajo para añadir el despegue.
+                </p>
+            </div>
+
+            <button class="btn btn-add" onclick="abrirModalTramo()">
+                <i class="fas fa-plus-circle"></i> AÑADIR NUEVO TRAMO
+            </button>
+        </section>
+
+        <button class="btn btn-save" onclick="generarJSON()">
+            <i class="fas fa-save"></i> DESCARGAR ARCHIVO DE RUTA (.JSON)
+        </button>
+        
+        <br><br>
+        <a href="../vfr/vuelo.html" style="color:#666; text-decoration:none;">&larr; Volver al Simulador</a>
+    </div>
+
+    <script>
+        let tramos = []; // Aquí guardaremos los datos en memoria
+
+        // 1. Simulación de abrir ventana para añadir datos (por ahora usamos prompts para probar rápido)
+        function abrirModalTramo() {
+            // En el siguiente paso haremos un modal bonito, 
+            // ahora vamos a pedir datos rápidos para ver si funciona la lógica.
+            
+            const tipo = prompt("Tipo de tramo? (DESPEGUE, CRUCERO, ATERRIZAJE)", "CRUCERO");
+            if(!tipo) return;
+
+            const puntoA = prompt("Punto Inicio (ej: Vigo):");
+            const puntoB = prompt("Punto Fin (ej: Pontevedra):");
+            const altitud = prompt("Altitud (ej: 3500 ft):", "3500 ft");
+            const velocidad = prompt("Velocidad (ej: 80 kts):", "80 kts");
+            const tiempo = prompt("Tiempo estimado (ej: 12 min):");
+            const rumbo = prompt("Rumbo Magnético (ej: 360°):");
+            const instruccion = prompt("Instrucciones / Notas:");
+
+            // Creamos el objeto tramo
+            const nuevoTramo = {
+                id: tramos.length + 1,
+                tipo: tipo.toUpperCase(),
+                punto_inicio: puntoA,
+                punto_fin: puntoB,
+                rumbo: rumbo,
+                altitud: altitud,
+                tiempo: tiempo,
+                velocidad: velocidad,
+                instruccion: instruccion || ""
+            };
+
+            tramos.push(nuevoTramo);
+            renderizarTramos();
+        }
+
+        // 2. Pintar los tramos en la pantalla
+        function renderizarTramos() {
+            const contenedor = document.getElementById('lista-tramos');
+            contenedor.innerHTML = ''; // Limpiar
+
+            if (tramos.length === 0) {
+                contenedor.innerHTML = '<p style="text-align:center; color:#666;" id="msg-vacio">No hay tramos.</p>';
+                return;
+            }
+
+            tramos.forEach((tramo, index) => {
+                const div = document.createElement('div');
+                div.className = `tramo-item ${tramo.tipo.toLowerCase()}`; // Para colores según tipo
+                
+                div.innerHTML = `
+                    <div class="tramo-header">
+                        <span>#${index + 1} ${tramo.tipo}</span>
+                        <span style="color:#f1c40f">${tramo.rumbo || 'N/A'}</span>
+                    </div>
+                    <div class="row" style="margin-bottom:5px;">
+                        <div class="col"><strong>${tramo.punto_inicio}</strong> &rarr; <strong>${tramo.punto_fin}</strong></div>
+                    </div>
+                    <div class="row" style="font-size:0.85rem; color:#aaa;">
+                        <div class="col"><i class="fas fa-arrows-alt-v"></i> ${tramo.altitud}</div>
+                        <div class="col"><i class="fas fa-tachometer-alt"></i> ${tramo.velocidad}</div>
+                        <div class="col"><i class="far fa-clock"></i> ${tramo.tiempo}</div>
+                    </div>
+                    <div style="margin-top:5px; font-style:italic; font-size:0.8rem; color:#888;">
+                        "${tramo.instruccion}"
+                    </div>
+                `;
+                contenedor.appendChild(div);
+            });
+        }
+
+        // 3. Generar y Descargar el JSON
+        function generarJSON() {
+            const nombre = document.getElementById('meta-nombre').value || "Ruta Sin Nombre";
+            const fecha = document.getElementById('meta-fecha').value;
+            const hora = document.getElementById('meta-hora').value;
+            const meteo = document.getElementById('meta-meteo').value;
+
+            // Construimos la estructura final igual que la que hicimos manual
+            const rutaFinal = {
+                meta: {
+                    nombre: nombre,
+                    fecha: fecha,
+                    hora_estimada: hora,
+                    meteo_prevista: meteo,
+                    notas: "Generada con MiWebMSFS20"
+                },
+                tramos: tramos
+            };
+
+            // Convertir a texto JSON
+            const jsonString = JSON.stringify(rutaFinal, null, 2);
+
+            // Crear un "link fantasma" para forzar la descarga
+            const blob = new Blob([jsonString], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            // Limpiamos el nombre para el archivo (ej: "Vigo - Santiago" -> "vigo_santiago.json")
+            const nombreArchivo = nombre.toLowerCase().replace(/[^a-z0-9]/g, '_') + ".json";
+            a.download = nombreArchivo;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html>
