@@ -8,6 +8,7 @@ body.modo-vuelo {
     display: flex;
     flex-direction: column;
     background-color: #121418;
+    margin: 0;
 }
 
 /* Barra superior muy fina */
@@ -216,7 +217,9 @@ body.modo-vuelo {
     background: #ff9800; /* Naranja estilo aviación */
 }
 
-/* ESTILOS NAVLOG (MÓDULO 1) */
+/* =========================================
+   ESTILOS NAVLOG (MÓDULO 1)
+   ========================================= */
 .tramo-card {
     background-color: #252a36;
     margin-bottom: 10px;
@@ -264,4 +267,23 @@ body.modo-vuelo {
     font-style: italic;
     border-top: 1px solid #333;
     padding-top: 5px;
+}
+
+/* =========================================
+   TRUCO DE MAGIA PARA EL MANDO (MÓDULO 3)
+   ========================================= */
+#modulo-mando img {
+    /* 1. Invertir: vuelve blanco lo negro. 
+       2. Contraste: fuerza a que el fondo sea negro PURO para que se borre bien */
+    filter: invert(1) contrast(1.1); 
+    
+    /* 3. Esto es lo que hace la magia: Todo lo que sea negro se vuelve INVISIBLE */
+    mix-blend-mode: screen; 
+    
+    /* Ajustes visuales */
+    width: 100%;
+    height: auto;
+    opacity: 0.9; /* Un pelín transparente para que se integre mejor */
+    border-radius: 8px;
+    display: block; /* Evita espacios extra abajo */
 }
