@@ -1,8 +1,6 @@
 /* Quitamos scroll y márgenes para aprovechar la tablet al 100% */
 body.modo-vuelo {
-    /* Fallback para navegadores viejos */
     height: 100vh;
-    /* LA CLAVE: dvh se adapta si aparece/desaparece la barra de direcciones o botones */
     height: 100dvh; 
     overflow: hidden;
     display: flex;
@@ -22,7 +20,7 @@ body.modo-vuelo {
     padding: 0 15px;
     color: #888;
     font-size: 0.9rem;
-    flex-shrink: 0; /* Que no se aplaste nunca */
+    flex-shrink: 0; 
 }
 
 .btn-salir {
@@ -42,22 +40,22 @@ body.modo-vuelo {
 /* Contenedor de los 3 slots */
 .cockpit-container {
     flex-grow: 1;
-    display: flex; /* Esto pone los slots en fila horizontal */
+    display: flex; 
     padding: 5px;
-    gap: 5px; /* Espacio entre slots */
-    overflow: hidden; /* Asegura que nada se salga del contenedor principal */
+    gap: 5px; 
+    overflow: hidden; 
 }
 
 /* Estilo de cada Slot */
 .slot {
-    flex: 1; /* Significa: "Ocupad todos el mismo ancho" */
+    flex: 1; 
     background-color: #1e222d;
     border: 1px solid #333;
     border-radius: 8px;
     display: flex;
     flex-direction: column;
-    min-width: 0; /* Evita que el slot se rompa si el contenido es muy ancho */
-    height: 100%; /* Forzamos altura completa */
+    min-width: 0; 
+    height: 100%; 
 }
 
 .slot-header {
@@ -70,14 +68,12 @@ body.modo-vuelo {
     justify-content: space-between;
     text-transform: uppercase;
     letter-spacing: 1px;
-    flex-shrink: 0; /* Evita que el header se aplaste */
+    flex-shrink: 0; 
 }
 
-/* --- CAMBIO IMPORTANTE AQUÍ PARA EL SCROLL --- */
+/* Contenedor interno que no hace scroll por defecto */
 .slot-content {
     flex-grow: 1;
-    /* Cambiamos overflow-y: auto a hidden aquí. 
-       El scroll lo harán los hijos (#tab-checklist) */
     overflow: hidden; 
     display: flex;
     flex-direction: column;
@@ -85,15 +81,14 @@ body.modo-vuelo {
     position: relative;
 }
 
-/* Scroll específico para las pestañas de contenido */
-#tab-checklist, #tab-ficha {
+/* --- AQUÍ ESTÁ EL CAMBIO --- */
+/* Añadido #container-tramos a la lista de elementos con scroll */
+#tab-checklist, #tab-ficha, #container-tramos {
     flex-grow: 1;
-    overflow-y: auto; /* AQUÍ es donde ocurre el scroll */
-    padding-right: 5px; /* Espacio para que la barra no tape texto */
+    overflow-y: auto; /* Scroll vertical activado */
+    padding-right: 5px; 
     
-    /* --- EL FIX DE LA TABLET --- */
-    /* Añadimos un colchón gigante abajo para que el último botón 
-       suba y no se quede tapado por la barra de Android/iPad */
+    /* El colchón para la tablet */
     padding-bottom: 120px; 
 }
 
@@ -104,19 +99,16 @@ body.modo-vuelo {
     transform: translateY(-50%);
 }
 
-/* --- ESTILOS PANEL CENTRAL (TABS) --- */
-
-/* Header ajustado para los botones */
+/* --- TABS --- */
 .header-con-tabs {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 5px 10px;
     background: #2a2a2a; 
-    flex-shrink: 0; /* Evita que se aplaste al hacer scroll */
+    flex-shrink: 0; 
 }
 
-/* Contenedor de los botones */
 .toggle-wrapper {
     display: flex;
     gap: 5px;
@@ -125,7 +117,6 @@ body.modo-vuelo {
     border-radius: 5px;
 }
 
-/* Botones individuales */
 .tab-btn {
     background: transparent;
     border: none;
@@ -139,12 +130,11 @@ body.modo-vuelo {
 }
 
 .tab-btn.active {
-    background: #007bff; /* Azul activo */
+    background: #007bff; 
     color: white;
     box-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
-/* Utilidad para ocultar */
 .hidden { display: none !important; }
 
 /* --- CHECKLIST --- */
@@ -156,7 +146,6 @@ body.modo-vuelo {
     align-items: center;
     border-left: 3px solid transparent;
 }
-/* Al marcar el check */
 .check-row:has(input:checked) {
     border-left-color: #4caf50;
     opacity: 0.5;
@@ -176,7 +165,6 @@ body.modo-vuelo {
 .tabla-datos td { border-bottom: 1px solid #444; padding: 5px; }
 .tabla-datos .num { text-align: right; color: #4caf50; font-family: monospace; font-size: 1.1em;}
 
-/* Botón de resetear */
 .btn-reset {
     width: 100%;
     margin-top: 15px;
@@ -189,37 +177,13 @@ body.modo-vuelo {
 }
 .btn-reset:hover { background: #444; }
 
+/* --- SCROLLBAR --- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #121418; border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #ff9800; }
 
-/* =========================================
-   SCROLLBAR PERSONALIZADA (ESTILO MODERNO)
-   ========================================= */
-   
-/* Ancho de la barra */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-/* El carril (fondo) */
-::-webkit-scrollbar-track {
-    background: #121418; 
-    border-radius: 4px;
-}
-
-/* La barra que se mueve ("thumb") */
-::-webkit-scrollbar-thumb {
-    background: #444; 
-    border-radius: 4px;
-}
-
-/* Al pasar el ratón por encima de la barra */
-::-webkit-scrollbar-thumb:hover {
-    background: #ff9800; /* Naranja estilo aviación */
-}
-
-/* =========================================
-   ESTILOS NAVLOG (MÓDULO 1)
-   ========================================= */
+/* --- ESTILOS NAVLOG (MÓDULO 1) --- */
 .tramo-card {
     background-color: #252a36;
     margin-bottom: 10px;
@@ -238,9 +202,7 @@ body.modo-vuelo {
     color: #aaa;
 }
 .tramo-rumbo { color: #f1c40f; }
-
 .tramo-body { padding: 10px; }
-
 .tramo-puntos {
     font-size: 1rem;
     color: #fff;
@@ -249,18 +211,16 @@ body.modo-vuelo {
     align-items: center;
     gap: 10px;
 }
-
 .tramo-datos {
     display: flex;
     justify-content: space-between;
     font-size: 0.85rem;
-    color: #4a90e2; /* Azulito */
+    color: #4a90e2; 
     margin-bottom: 8px;
     background: rgba(0,0,0,0.2);
     padding: 5px;
     border-radius: 4px;
 }
-
 .tramo-instruccion {
     font-size: 0.85rem;
     color: #bbb;
@@ -269,21 +229,13 @@ body.modo-vuelo {
     padding-top: 5px;
 }
 
-/* =========================================
-   TRUCO DE MAGIA PARA EL MANDO (MÓDULO 3)
-   ========================================= */
+/* --- MÓDULO 3 (MANDO) --- */
 #modulo-mando img {
-    /* 1. Invertir: vuelve blanco lo negro. 
-       2. Contraste: fuerza a que el fondo sea negro PURO para que se borre bien */
     filter: invert(1) contrast(1.1); 
-    
-    /* 3. Esto es lo que hace la magia: Todo lo que sea negro se vuelve INVISIBLE */
     mix-blend-mode: screen; 
-    
-    /* Ajustes visuales */
     width: 100%;
     height: auto;
-    opacity: 0.9; /* Un pelín transparente para que se integre mejor */
+    opacity: 0.9;
     border-radius: 8px;
-    display: block; /* Evita espacios extra abajo */
+    display: block;
 }
