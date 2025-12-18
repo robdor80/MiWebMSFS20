@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "nombre": "Vigo (LEVX) - Santiago (LEST)",
+    "fecha": "2025-10-12",
+    "hora_estimada": "10:00",
+    "meteo_prevista": "CAVOK, Viento 360/10",
+    "notas": "Vuelo VFR escénico por la costa."
+  },
+  "tramos": [
+    {
+      "id": 1,
+      "tipo": "DESPEGUE",
+      "punto_inicio": "LEVX Pista 19",
+      "punto_fin": "500ft AGL",
+      "rumbo": "192°",
+      "altitud": "500 ft",
+      "tiempo": "2 min",
+      "velocidad": "Vy (67 kts)",
+      "instruccion": "Subir en eje de pista hasta 500ft, luego virar."
+    },
+    {
+      "id": 2,
+      "tipo": "CRUCERO",
+      "punto_inicio": "Vigo",
+      "punto_fin": "Pontevedra",
+      "rumbo": "360°",
+      "altitud": "3500 ft",
+      "tiempo": "12 min",
+      "velocidad": "80 kts",
+      "instruccion": "Mantener referencia visual con la Ría."
+    },
+    {
+      "id": 3,
+      "tipo": "CRUCERO",
+      "punto_inicio": "Pontevedra",
+      "punto_fin": "Padrón",
+      "rumbo": "010°",
+      "altitud": "3500 ft",
+      "tiempo": "10 min",
+      "velocidad": "85 kts",
+      "instruccion": "Atentos tráfico aproximación Santiago."
+    },
+    {
+      "id": 4,
+      "tipo": "ATERRIZAJE",
+      "punto_inicio": "Padrón",
+      "punto_fin": "LEST",
+      "rumbo": "N/A",
+      "altitud": "Descenso",
+      "tiempo": "8 min",
+      "velocidad": "65 kts",
+      "instruccion": "Contactar Torre Santiago 118.75. Notificar Sierra."
+    }
+  ]
+}

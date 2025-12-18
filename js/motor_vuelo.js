@@ -209,3 +209,83 @@ function resetChecklist() {
     const checks = document.querySelectorAll('#tab-checklist input[type="checkbox"]');
     checks.forEach(cb => cb.checked = false);
 }
+
+/* ==========================================
+   GESTIÓN DE RUTAS (MÓDULO 1)
+   ========================================== */
+
+async function cargarRutaSeleccionada(nombreArchivo) {
+    if (!nombreArchivo) return;
+
+    const container = document.getElementById('container-tramos');
+    const headerInfo = document.getElementById('info-ruta-header');
+    
+    container.innerHTML = '<p class="placeholder">Cargando datos de navegación...</p>';
+
+    try {
+        // Asumimos que están en la carpeta data/rutas/
+        const respuesta = await fetch(`../data/rutas/${nombreArchivo}.json`);
+        if (!respuesta.ok) throw new Error("No se pudo cargar la ruta");
+        
+        const datos = await respuesta.json();
+        renderizarRuta(datos);
+
+    } catch (error) {
+        console.error(error);
+        container.innerHTML = '<p class="placeholder" style="color:red">Error al cargar ruta</p>';
+        headerInfo.classList.add('hidden');
+    }
+}
+
+function renderizarRuta(datos) {
+    // 1. Rellenar cabecera
+    const headerInfo = document.getElementById('info-ruta-header');
+    document.getElementById('ruta-nombre').textContent = datos.meta.nombre;
+    document.getElementById('ruta-meteo').innerHTML = `<i class="fas fa-cloud-sun"></i> ${datos.meta.meteo_prevista}`;
+    headerInfo.classList.remove('hidden');
+
+    // 2. Generar Tramos
+    const container = document.getElementById('container-tramos');
+    container.innerHTML = ''; // Limpiar
+
+    datos.tramos.forEach((tramo, index) => {
+        const tarjeta = document.createElement('div');
+        tarjeta.className = 'tramo-card';
+        
+        // Icono según tipo
+        let icono = 'fa-arrow-right';
+        let colorBorde = '#444'; // Gris por defecto
+        
+        if (tramo.tipo === 'DESPEGUE') { 
+            icono = 'fa-plane-departure'; 
+            colorBorde = '#ff9800'; // Naranja
+        } else if (tramo.tipo === 'ATERRIZAJE') {
+            icono = 'fa-plane-arrival';
+            colorBorde = '#4caf50'; // Verde
+        }
+
+        tarjeta.style.borderLeft = `4px solid ${colorBorde}`;
+
+        tarjeta.innerHTML = `
+            <div class="tramo-header">
+                <span class="tramo-id">#${index + 1} ${tramo.tipo}</span>
+                <span class="tramo-rumbo"><i class="far fa-compass"></i> ${tramo.rumbo}</span>
+            </div>
+            <div class="tramo-body">
+                <div class="tramo-puntos">
+                    <strong>${tramo.punto_inicio}</strong> <i class="fas ${icono}"></i> <strong>${tramo.punto_fin}</strong>
+                </div>
+                <div class="tramo-datos">
+                    <span><i class="fas fa-arrows-alt-v"></i> ${tramo.altitud}</span>
+                    <span><i class="fas fa-tachometer-alt"></i> ${tramo.velocidad}</span>
+                    <span><i class="far fa-clock"></i> ${tramo.tiempo}</span>
+                </div>
+                <div class="tramo-instruccion">
+                    ${tramo.instruccion}
+                </div>
+            </div>
+        `;
+
+        container.appendChild(tarjeta);
+    });
+}

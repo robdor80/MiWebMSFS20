@@ -215,3 +215,53 @@ body.modo-vuelo {
 ::-webkit-scrollbar-thumb:hover {
     background: #ff9800; /* Naranja estilo aviación */
 }
+
+/* ESTILOS NAVLOG (MÓDULO 1) */
+.tramo-card {
+    background-color: #252a36;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.tramo-header {
+    background-color: rgba(255,255,255,0.05);
+    padding: 5px 10px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #aaa;
+}
+.tramo-rumbo { color: #f1c40f; }
+
+.tramo-body { padding: 10px; }
+
+.tramo-puntos {
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tramo-datos {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    color: #4a90e2; /* Azulito */
+    margin-bottom: 8px;
+    background: rgba(0,0,0,0.2);
+    padding: 5px;
+    border-radius: 4px;
+}
+
+.tramo-instruccion {
+    font-size: 0.85rem;
+    color: #bbb;
+    font-style: italic;
+    border-top: 1px solid #333;
+    padding-top: 5px;
+}
