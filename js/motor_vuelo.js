@@ -167,6 +167,7 @@ function switchTab(tabName) {
     
     if (!checklist || !ficha) return;
 
+    // 1. Mostrar/Ocultar contenido
     if (tabName === 'checklist') {
         checklist.classList.remove('hidden');
         ficha.classList.add('hidden');
@@ -175,15 +176,20 @@ function switchTab(tabName) {
         ficha.classList.remove('hidden');
     }
 
-    const btns = document.querySelectorAll('.toggle-wrapper .tab-btn');
-    if (btns.length >= 2) {
-        if (tabName === 'checklist') {
-            btns[0].classList.add('active');
-            btns[1].classList.remove('active');
-        } else {
-            btns[0].classList.remove('active');
-            btns[1].classList.add('active');
-        }
+    // 2. Actualizar estado de los botones (NUEVA VERSIÓN DISCRETA)
+    // Buscamos todos los botones con la nueva clase
+    const btns = document.querySelectorAll('.tab-btn-discrete');
+    
+    // Reseteamos todos (quitamos 'active')
+    btns.forEach(btn => btn.classList.remove('active'));
+
+    // Activamos el correcto según su texto o posición
+    if (tabName === 'checklist') {
+        // Asumimos que el primero es checklist
+        if(btns[0]) btns[0].classList.add('active');
+    } else {
+        // Asumimos que el segundo es ficha
+        if(btns[1]) btns[1].classList.add('active');
     }
 }
 

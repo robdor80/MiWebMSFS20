@@ -7,29 +7,31 @@ body.modo-vuelo {
     flex-direction: column;
     background-color: #121418;
     margin: 0;
+    font-family: sans-serif;
 }
 
 /* Barra superior muy fina */
 .top-bar {
-    height: 40px;
+    height: 35px; /* Un pelín más fina para ganar espacio */
     background-color: #0d0f12;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #222;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 15px;
-    color: #888;
-    font-size: 0.9rem;
+    padding: 0 10px;
+    color: #666;
+    font-size: 0.85rem;
     flex-shrink: 0; 
 }
 
 .btn-salir {
     text-decoration: none;
-    color: #888;
+    color: #666;
     margin-right: 15px;
     font-weight: bold;
+    transition: color 0.2s;
 }
-.btn-salir:hover { color: #fff; }
+.btn-salir:hover { color: #aaa; }
 
 #indicador-avion {
     color: #4a90e2;
@@ -44,32 +46,65 @@ body.modo-vuelo {
     padding: 5px;
     gap: 5px; 
     overflow: hidden; 
+    background-color: #121418;
 }
 
-/* Estilo de cada Slot */
+/* Estilo de cada Slot (Módulo) */
 .slot {
     flex: 1; 
-    background-color: #1e222d;
+    background-color: #1e222d; /* Fondo base del módulo */
     border: 1px solid #333;
-    border-radius: 8px;
+    border-radius: 6px; /* Bordes un poco menos redondeados para look más técnico */
     display: flex;
     flex-direction: column;
     min-width: 0; 
     height: 100%; 
 }
 
+/* --- CABECERA UNIFICADA PARA LOS 3 MÓDULOS --- */
 .slot-header {
-    background-color: #252a36;
-    padding: 5px 10px;
+    background-color: #252a36; /* Color ligeramente más claro que el fondo del slot */
+    padding: 8px 12px; /* Altura consistente */
     border-bottom: 1px solid #333;
     font-size: 0.8rem;
-    color: #aaa;
+    color: #aaa; /* Color de texto base (inactivo) */
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Elementos a los extremos */
+    align-items: center; /* Centrado vertical perfecto */
     text-transform: uppercase;
     letter-spacing: 1px;
+    font-weight: bold;
     flex-shrink: 0; 
 }
+
+/* NUEVO ESTILO PARA BOTONES DE PESTAÑA DISCRETOS (Sin azul) */
+.tab-btn-discrete {
+    background: none;
+    border: none;
+    color: #777; /* Color inactivo (grisáceo) */
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 5px 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 4px;
+}
+
+.tab-btn-discrete:hover {
+    color: #bbb; /* Ligeramente más claro al pasar el ratón */
+}
+
+/* Estado ACTIVO: Solo texto blanco brillante, sin fondo de color */
+.tab-btn-discrete.active {
+    color: #fff;
+    text-shadow: 0 0 8px rgba(255,255,255,0.2); /* Un brillo muy sutil */
+}
+
 
 /* Contenedor interno que no hace scroll por defecto */
 .slot-content {
@@ -81,15 +116,12 @@ body.modo-vuelo {
     position: relative;
 }
 
-/* --- AQUÍ ESTÁ EL CAMBIO --- */
-/* Añadido #container-tramos a la lista de elementos con scroll */
+/* Elementos con SCROLL */
 #tab-checklist, #tab-ficha, #container-tramos {
     flex-grow: 1;
-    overflow-y: auto; /* Scroll vertical activado */
+    overflow-y: auto; 
     padding-right: 5px; 
-    
-    /* El colchón para la tablet */
-    padding-bottom: 120px; 
+    padding-bottom: 120px; /* Colchón tablet */
 }
 
 .placeholder {
@@ -97,152 +129,61 @@ body.modo-vuelo {
     text-align: center;
     margin-top: 50%;
     transform: translateY(-50%);
+    font-style: italic;
 }
 
-/* --- TABS --- */
-.header-con-tabs {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px 10px;
-    background: #2a2a2a; 
-    flex-shrink: 0; 
-}
-
-.toggle-wrapper {
-    display: flex;
-    gap: 5px;
-    background: #111;
-    padding: 3px;
-    border-radius: 5px;
-}
-
-.tab-btn {
-    background: transparent;
-    border: none;
-    color: #777;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 0.85rem;
-    border-radius: 3px;
-    transition: 0.2s;
-}
-
-.tab-btn.active {
-    background: #007bff; 
-    color: white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-}
-
+/* Utiles */
 .hidden { display: none !important; }
 
-/* --- CHECKLIST --- */
-.check-row {
-    background: rgba(255,255,255,0.05);
-    margin-bottom: 4px;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    border-left: 3px solid transparent;
-}
-.check-row:has(input:checked) {
-    border-left-color: #4caf50;
-    opacity: 0.5;
-    text-decoration: line-through;
-}
-.check-row label {
-    flex: 1;
-    margin-left: 10px;
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-}
-.check-row span { color: #f1c40f; font-weight: bold; }
 
-/* --- FICHA TÉCNICA --- */
-.tabla-datos { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-.tabla-datos td { border-bottom: 1px solid #444; padding: 5px; }
-.tabla-datos .num { text-align: right; color: #4caf50; font-family: monospace; font-size: 1.1em;}
-
-.btn-reset {
-    width: 100%;
-    margin-top: 15px;
-    padding: 8px;
-    background: #333;
-    color: white;
-    border: 1px solid #555;
-    cursor: pointer;
-    flex-shrink: 0;
-}
-.btn-reset:hover { background: #444; }
-
-/* --- SCROLLBAR --- */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #121418; border-radius: 4px; }
-::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #ff9800; }
+/* --- SCROLLBAR MODERNA --- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
 
 /* --- ESTILOS NAVLOG (MÓDULO 1) --- */
 .tramo-card {
     background-color: #252a36;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     border-radius: 4px;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    font-size: 0.9rem;
 }
 
 .tramo-header {
-    background-color: rgba(255,255,255,0.05);
+    background-color: rgba(255,255,255,0.03);
     padding: 5px 10px;
     display: flex;
     justify-content: space-between;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: bold;
-    color: #aaa;
+    color: #999;
 }
-.tramo-rumbo { color: #f1c40f; }
-.tramo-body { padding: 10px; }
+.tramo-body { padding: 8px 10px; }
 .tramo-puntos {
-    font-size: 1rem;
-    color: #fff;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    font-size: 1rem; color: #eee; margin-bottom: 5px;
+    display: flex; align-items: center; gap: 10px;
 }
 .tramo-datos {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.85rem;
-    color: #4a90e2; 
-    margin-bottom: 8px;
-    background: rgba(0,0,0,0.2);
-    padding: 5px;
-    border-radius: 4px;
+    display: flex; justify-content: space-between;
+    font-size: 0.8rem; color: #4a90e2; 
+    margin-bottom: 5px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 4px;
 }
 .tramo-instruccion {
-    font-size: 0.85rem;
-    color: #bbb;
-    font-style: italic;
-    border-top: 1px solid #333;
-    padding-top: 5px;
+    font-size: 0.8rem; color: #aaa; font-style: italic;
+    border-top: 1px solid #333; padding-top: 4px;
 }
 
-/* ESTILO "KNEEBOARD" (Papel físico) */
+/* --- MÓDULO 3 (MANDO - ESTILO KNEEBOARD/PAPEL OSCURO) --- */
 #modulo-mando img {
-    /* No invertimos colores, pero... */
-    
-    /* 1. Le bajamos el brillo al 85% para que no deslumbre */
-    /* 2. Le damos un pelín de sepia (0.2) para que parezca papel cálido/viejo y no luz de monitor */
+    /* Bajamos brillo y damos tono sepia/cálido para que no deslumbre */
     filter: brightness(0.85) sepia(0.2);
-    
-    /* Ajustes de tamaño */
     width: 100%;
     height: auto;
     display: block;
     border-radius: 6px;
-    
-    /* Sombra para que parezca un papel puesto encima */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    opacity: 0.95;
 }
