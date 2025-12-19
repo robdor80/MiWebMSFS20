@@ -300,11 +300,14 @@ body.modo-vuelo {
     display: block; /* Aseguramos comportamiento de bloque estándar */
 }
 
-/* 3. Estilo de la imagen */
+/* Estilo de la imagen REDUCIDO Y CENTRADO */
 #modulo-mando img {
-    width: 100%;
-    height: auto; /* La imagen crece lo que necesite a lo alto */
+    width: 92%;        /* <--- CAMBIO: Reducimos el ancho al 92% */
+    height: auto;      /* La altura se reduce proporcionalmente */
+    margin: 15px auto; /* <--- CAMBIO: Centramos la imagen horizontalmente y damos aire vertical */
     display: block;
+    
+    /* Sombra 3D y opacidad */
     filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.6));
-    margin-bottom: 20px;
+    opacity: 0.95;
 }
