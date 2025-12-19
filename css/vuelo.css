@@ -61,20 +61,26 @@ body.modo-vuelo {
     height: 100%; 
 }
 
-/* --- CABECERA UNIFICADA PARA LOS 3 MÓDULOS --- */
+/* --- CABECERA UNIFICADA (FIX PARA EL TOC: ALTURA FIJA EXACTA) --- */
 .slot-header {
-    background-color: #252a36; /* Color ligeramente más claro que el fondo del slot */
-    padding: 8px 12px; /* Altura consistente */
+    background-color: #252a36;
+    /* LA CLAVE: Forzamos altura idéntica para los 3, tengan botones o no */
+    height: 42px; 
+    padding: 0 15px; /* Quitamos padding arriba/abajo, Flex se encarga de centrar */
     border-bottom: 1px solid #333;
+    
     font-size: 0.8rem;
-    color: #aaa; /* Color de texto base (inactivo) */
+    color: #aaa;
+    
     display: flex;
-    justify-content: space-between; /* Elementos a los extremos */
-    align-items: center; /* Centrado vertical perfecto */
+    justify-content: space-between;
+    align-items: center; /* Esto es lo que centra el texto/botones verticalmente */
+    
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: bold;
     flex-shrink: 0; 
+    box-sizing: border-box; /* Asegura que el borde no sume píxeles extra */
 }
 
 /* NUEVO ESTILO PARA BOTONES DE PESTAÑA DISCRETOS (Sin azul) */
