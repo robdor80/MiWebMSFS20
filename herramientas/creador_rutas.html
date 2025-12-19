@@ -135,6 +135,15 @@
     <div class="container">
         <h1><i class="fas fa-route"></i> Planificador de Rutas VFR</h1>
 
+        <div style="background: rgba(74, 144, 226, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px dashed #4a90e2; display: flex; align-items: center; justify-content: space-between; gap: 15px;">
+            <div style="flex-grow: 1;">
+                <label style="color: #4a90e2; margin-bottom: 5px; cursor: pointer;" for="input-carga">📂 Editar ruta existente (.json)</label>
+                <input type="file" id="input-carga" accept=".json" style="background: #121418; border: 1px solid #333;">
+            </div>
+            <button class="btn" onclick="cargarRuta()" style="background: #4a90e2; color: white; height: fit-content; margin-top: 18px; border: 1px solid #4a90e2;">
+                <i class="fas fa-upload"></i> CARGAR
+            </button>
+        </div>
         <section>
             <h2><i class="fas fa-info-circle"></i> Datos Generales</h2>
             <div class="form-group">
@@ -242,6 +251,47 @@
 
     <script>
         let tramos = []; 
+
+        // --- NUEVA FUNCIÓN DE CARGA ---
+        function cargarRuta() {
+            const input = document.getElementById('input-carga');
+            
+            if (!input.files.length) {
+                alert("⚠️ Por favor, selecciona primero un archivo .json");
+                return;
+            }
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const datos = JSON.parse(e.target.result);
+
+                    // 1. Rellenar Datos Generales (META)
+                    // Usamos '|| ""' para que no falle si algún campo viene vacío
+                    if(datos.meta) {
+                        document.getElementById('meta-nombre').value = datos.meta.nombre || "";
+                        document.getElementById('meta-fecha').value = datos.meta.fecha || "";
+                        document.getElementById('meta-hora').value = datos.meta.hora_estimada || "";
+                        document.getElementById('meta-meteo').value = datos.meta.meteo_prevista || "";
+                    }
+
+                    // 2. Rellenar Tramos
+                    if(datos.tramos && Array.isArray(datos.tramos)) {
+                        tramos = datos.tramos; // Sobrescribimos el array actual con el del archivo
+                        renderizarTramos();    // Pintamos los tramos en pantalla
+                    }
+
+                    alert("✅ Ruta cargada correctamente. Ya puedes editarla.");
+
+                } catch (error) {
+                    console.error(error);
+                    alert("❌ Error al leer el archivo. Asegúrate de que es un JSON válido generado por esta web.");
+                }
+            };
+
+            reader.readAsText(input.files[0]);
+        }
 
         // --- FUNCIONES DEL MODAL ---
         function abrirModal() {
