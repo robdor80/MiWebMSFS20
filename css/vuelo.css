@@ -302,7 +302,7 @@ body.modo-vuelo {
 
 /* Estilo de la imagen REDUCIDO Y CENTRADO */
 #modulo-mando img {
-    width: 92%;        /* <--- CAMBIO: Reducimos el ancho al 92% */
+    width: 80%;        /* <--- CAMBIO: Reducimos el ancho al 92% */
     height: auto;      /* La altura se reduce proporcionalmente */
     margin: 15px auto; /* <--- CAMBIO: Centramos la imagen horizontalmente y damos aire vertical */
     display: block;
