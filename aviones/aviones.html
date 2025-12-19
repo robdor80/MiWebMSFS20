@@ -160,91 +160,97 @@
         document.addEventListener('DOMContentLoaded', iniciarHangar);
         
         let flotaGlobal = [];
-        // Detectamos en qué modo estamos leyendo la URL
         const urlParams = new URLSearchParams(window.location.search);
-        const modoActual = urlParams.get('modo'); // será 'vuelo' o 'museo'
+        const modoActual = urlParams.get('modo'); // 'vuelo' o 'museo'
 
         async function iniciarHangar() {
-            // 1. Ajustar Título según el modo
+            // 1. Configurar textos según el modo
             const tituloH1 = document.querySelector('h1');
             const subTitulo = document.querySelector('.container > p');
 
             if (modoActual === 'museo') {
-                tituloH1.textContent = "Catálogo de Flota";
+                tituloH1.textContent = "CATÁLOGO DE FLOTA";
                 subTitulo.textContent = "Consulta las especificaciones técnicas de tus aeronaves.";
-                // Ocultamos el botón de volver a inicio para que parezca más una app integrada
-                // (Opcional, pero queda bien)
+                document.title = "Museo | MiWebMSFS20";
             } else {
-                tituloH1.textContent = "Selección de Aeronave";
+                tituloH1.textContent = "SELECCIÓN DE AERONAVE";
                 subTitulo.textContent = "Elige un aparato para iniciar las operaciones de vuelo VFR.";
+                document.title = "Vuelo | MiWebMSFS20";
             }
 
-            // 2. Cargar los aviones
+            // 2. Cargar datos
             await cargarFlota();
         }
 
         async function cargarFlota() {
             const grid = document.getElementById('grid-aviones');
-            grid.innerHTML = '<p style="color: #aaa;">Abriendo hangar...</p>';
+            grid.innerHTML = '<p style="color: #aaa;">Conectando con base de datos...</p>';
 
             try {
+                // A. Cargar lista base (flota.json)
                 const response = await fetch('../data/flota.json');
-                if (!response.ok) throw new Error("Error cargando flota.json");
+                if (!response.ok) throw new Error("No se encuentra data/flota.json");
                 
                 const listaFlota = await response.json();
-                grid.innerHTML = '';
+                grid.innerHTML = ''; // Limpiar mensaje
 
+                // B. Cargar detalles de cada avión
                 for (const item of listaFlota) {
                     try {
-                        let avion = item;
-                        // Intentamos cargar detalles extra si existen
+                        let avion = { ...item }; // Copia base
+                        
+                        // Si tiene archivo de perfil extra (ej: c152.json), lo cargamos
                         if (item.archivo_perfil) {
-                            const respPerfil = await fetch('../' + item.archivo_perfil);
+                            // Asumimos que la ruta en el JSON es "data/c152.json", añadimos "../"
+                            const rutaPerfil = '../' + item.archivo_perfil;
+                            const respPerfil = await fetch(rutaPerfil);
+                            
                             if (respPerfil.ok) {
-                                const perfil = await respPerfil.json();
-                                avion = { ...item, ...perfil }; // Mezclamos datos
+                                const perfilCompleto = await respPerfil.json();
+                                // Mezclamos los datos (el perfil específico manda sobre la flota)
+                                avion = { ...avion, ...perfilCompleto };
+                            } else {
+                                console.warn("No se cargó el perfil detallado:", rutaPerfil);
                             }
                         }
 
                         // Asegurar ID
                         if (!avion.id) avion.id = item.id;
-                        flotaGlobal.push(avion);
+                        
+                        // Guardar en memoria global para el modal
+                        // (Buscamos si ya existe para actualizarlo o lo añadimos)
+                        const index = flotaGlobal.findIndex(a => a.id === avion.id);
+                        if (index >= 0) flotaGlobal[index] = avion;
+                        else flotaGlobal.push(avion);
 
-                        // Imagen
-                        let rutaImagen = '../assets/imagenes/default/aviones.png';
-                        if (avion.imagenes?.avion) rutaImagen = '../' + avion.imagenes.avion;
-                        else if (avion.imagen) rutaImagen = '../' + avion.imagen;
+                        // Preparar Imagen Tarjeta
+                        let rutaImg = obtenerRutaImagen(avion);
 
-                        // --- LOGICA DE BOTONES SEGÚN MODO ---
-                        // Si estamos en modo museo, el botón VOLAR no se crea, o se oculta.
+                        // Crear Botones según modo
                         let htmlBotones = '';
-
                         if (modoActual === 'museo') {
-                            // MODO MUSEO: Solo botón FICHA (ancho completo)
                             htmlBotones = `
                                 <button class="btn-hangar btn-info" onclick="abrirModal('${avion.id}')" style="width:100%">
                                     <i class="fas fa-search"></i> VER DETALLES
-                                </button>
-                            `;
+                                </button>`;
                         } else {
-                            // MODO VUELO: Los dos botones
                             htmlBotones = `
                                 <button class="btn-hangar btn-info" onclick="abrirModal('${avion.id}')">
-                                    <i class="fas fa-info-circle"></i> Ficha
+                                    <i class="fas fa-info-circle"></i> FICHA
                                 </button>
                                 <button class="btn-hangar btn-fly" onclick="seleccionarAvion('${avion.id}')">
-                                    Volar <i class="fas fa-plane"></i>
-                                </button>
-                            `;
+                                    VOLAR <i class="fas fa-plane"></i>
+                                </button>`;
                         }
 
+                        // Pintar Tarjeta
                         const card = document.createElement('div');
                         card.className = 'card-avion';
                         card.innerHTML = `
-                            <img src="${rutaImagen}" alt="${avion.nombre}" class="card-img" onerror="this.src='https://via.placeholder.com/300x180?text=Sin+Imagen'">
+                            <img src="${rutaImg}" alt="${avion.nombre}" class="card-img" onerror="this.src='../assets/imagenes/default/aviones.png'">
                             <div class="card-body">
                                 <h3>${avion.nombre}</h3>
-                                <p>${avion.resumen || "Aeronave disponible."}</p>
+                                <p>${avion.resumen || "Aeronave lista para servicio."}</p>
                                 <div class="card-actions">
                                     ${htmlBotones}
                                 </div>
@@ -252,13 +258,17 @@
                         `;
                         grid.appendChild(card);
 
-                    } catch (e) { console.warn("Error en avión:", item); }
+                    } catch (e) {
+                        console.error("Error procesando avión:", item, e);
+                    }
                 }
 
             } catch (error) {
-                grid.innerHTML = `<p style="color:red">Error: ${error.message}</p>`;
+                grid.innerHTML = `<p style="color:red; border:1px solid red; padding:10px;">Error crítico: ${error.message}</p>`;
             }
         }
+
+        // --- FUNCIONES DE INTERFAZ ---
 
         function seleccionarAvion(id) {
             localStorage.setItem('avion_seleccionado', id);
@@ -269,46 +279,52 @@
             const avion = flotaGlobal.find(a => a.id === id);
             if (!avion) return;
 
-            const modal = document.getElementById('modal-ficha');
+            // 1. Rellenar Título y Descripción
             document.getElementById('modal-titulo').textContent = avion.nombre;
+            
+            // 2. Buscar Datos Técnicos (Usando la nueva función inteligente)
+            // Intentamos buscar "Vy", "Ascenso", o nombres similares en tu array de velocidades
+            const vy = buscarDato(avion, 'velocidades', ['Vy', 'Ascenso', 'vy']); 
+            const vso = buscarDato(avion, 'velocidades', ['Vso', 'Stall Sucio', 'Stall']);
+            
+            // Para motor y fuel, a veces están en 'info_motor' o propiedades sueltas
+            // Vamos a intentar buscar en info_motor si existe
+            const crucero = buscarDato(avion, 'info_motor', ['Crucero', 'RPM']);
+            const fuel = buscarDato(avion, 'info_motor', ['Fuel', 'Combustible', 'Total']);
 
-            // Datos técnicos seguros
-            const v = avion.ficha_tecnica?.velocidades_importantes || {};
-            const c = avion.ficha_tecnica?.configuracion_crucero || {};
-            const comb = avion.ficha_tecnica?.combustible || {};
-
-            let datosHTML = `
+            let tablaHTML = `
                 <table class="spec-table">
-                    <tr><td>Vy (Ascenso)</td><td class="val">${v.vy_ascenso || '?'} kts</td></tr>
-                    <tr><td>Vso (Stall)</td><td class="val">${v.vso || '?'} kts</td></tr>
-                    <tr><td>Crucero</td><td class="val">${c.rpm_crucero || '?'} RPM</td></tr>
-                    <tr><td>Fuel</td><td class="val">${comb.total || '?'} Gal</td></tr>
+                    <tr><td>Vy (Ascenso)</td><td class="val">${vy}</td></tr>
+                    <tr><td>Vso (Stall)</td><td class="val">${vso}</td></tr>
+                    <tr><td>Crucero</td><td class="val">${crucero}</td></tr>
+                    <tr><td>Fuel Total</td><td class="val">${fuel}</td></tr>
                 </table>
             `;
 
-            // Imagen Modal
-            let imgModal = '../assets/imagenes/default/aviones.png';
-            if (avion.imagenes?.avion) imgModal = '../' + avion.imagenes.avion;
+            // 3. Imagen Modal
+            let rutaImg = obtenerRutaImagen(avion);
 
-            // Botón del Modal: Si estamos en museo, NO mostramos "Volar" dentro del modal tampoco
-            let botonVolarModal = '';
+            // 4. Botón Volar (Solo si NO es museo)
+            let botonVolar = '';
             if (modoActual !== 'museo') {
-                botonVolarModal = `
+                botonVolar = `
                     <button class="btn-hangar btn-fly" onclick="seleccionarAvion('${avion.id}')" style="margin-top:20px; width:100%;">
                         SELECCIONAR Y VOLAR ✈️
-                    </button>
-                `;
+                    </button>`;
             }
 
+            // Inyectar HTML
             document.getElementById('modal-cuerpo').innerHTML = `
-                <img src="${imgModal}" class="modal-img">
-                <p style="color:#ccc; font-size:0.9rem; margin-bottom:15px;">${avion.descripcion || avion.resumen || ''}</p>
-                <h4 style="color:#fff; border-bottom:1px solid #333;">Datos Rápidos</h4>
-                ${datosHTML}
-                ${botonVolarModal}
+                <img src="${rutaImg}" class="modal-img" onerror="this.style.display='none'">
+                <p style="color:#ccc; font-size:0.9rem; margin-bottom:15px; line-height: 1.5;">
+                    ${avion.descripcion || avion.resumen || "Sin descripción detallada."}
+                </p>
+                <h4 style="color:#fff; border-bottom:1px solid #333; margin-top:0;">Datos Rápidos</h4>
+                ${tablaHTML}
+                ${botonVolar}
             `;
 
-            modal.classList.add('active');
+            document.getElementById('modal-ficha').classList.add('active');
         }
 
         function cerrarModal() {
@@ -318,6 +334,51 @@
         document.getElementById('modal-ficha').addEventListener('click', (e) => {
              if (e.target.id === 'modal-ficha') cerrarModal();
         });
+
+        // --- HERRAMIENTAS INTERNAS ---
+
+        // Función para arreglar la ruta de la imagen
+        function obtenerRutaImagen(avion) {
+            let ruta = '../assets/imagenes/default/aviones.png'; // Fallback
+            
+            // Prioridad 1: avion.imagenes.avion (estructura nueva)
+            if (avion.imagenes && avion.imagenes.avion) {
+                ruta = avion.imagenes.avion;
+            } 
+            // Prioridad 2: avion.imagen (estructura vieja en flota.json)
+            else if (avion.imagen) {
+                ruta = avion.imagen;
+            }
+
+            // Asegurar que empieza por "../" si no es web
+            if (!ruta.startsWith('../') && !ruta.startsWith('http')) {
+                ruta = '../' + ruta;
+            }
+            return ruta;
+        }
+
+        // Función inteligente para buscar datos en Arrays (Listas)
+        function buscarDato(avion, seccion, palabrasClave) {
+            if (!avion.ficha_tecnica) return "--";
+
+            // Primero miramos si existe la sección (ej: velocidades)
+            // Nota: En tu JSON puede llamarse "velocidades" o "velocidades_importantes", probamos ambas
+            let lista = avion.ficha_tecnica[seccion]; 
+            if (!lista && seccion === 'velocidades') lista = avion.ficha_tecnica.velocidades_importantes;
+            if (!lista && seccion === 'velocidades') lista = avion.ficha_tecnica.velocidades; // intento directo
+
+            if (Array.isArray(lista)) {
+                // Es una lista, buscamos dentro
+                const encontrado = lista.find(item => {
+                    // Comprobamos si el nombre del item contiene alguna palabra clave
+                    return palabrasClave.some(clave => item.nombre.toLowerCase().includes(clave.toLowerCase()));
+                });
+                return encontrado ? encontrado.valor : "--";
+            } else {
+                // No es una lista, quizás es un objeto directo (casos raros)
+                return "--";
+            }
+        }
     </script>
 </body>
 </html>
