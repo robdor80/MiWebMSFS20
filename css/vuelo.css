@@ -280,23 +280,31 @@ body.modo-vuelo {
 .btn-reset:hover { background: #333; color: #fff; border-color: #666; }
 
 
-/* --- 3. MANDO (MÓDULO DERECHO) --- */
+/* --- 3. MANDO (SOLUCIÓN DEFINITIVA DE SCROLL) --- */
 
-/* IMPORTANTE: Esto fuerza al contenedor del contenido a permitir scroll vertical */
+/* 1. El contenedor padre (.slot) ya tiene display:flex y columna */
+
+/* 2. Forzamos al contenido a tener altura relativa, no absoluta */
 #modulo-mando .slot-content {
-    overflow-y: auto !important;  /* Activa el scroll si la imagen es muy alta */
-    display: block;    /* Asegura que el scroll funcione bien */
-    padding-bottom: 60px; /* Espacio extra abajo para leer las letras finales */
+    /* Estas 3 líneas son el truco para que el scroll funcione en Flexbox */
+    flex: 1 1 auto;     /* Ocupa el espacio disponible */
+    min-height: 0;      /* IMPORTANTE: Permite que el contenedor se encoja para activar el scroll */
+    height: 100%;       /* Asegura que sabe cuál es su límite */
+
+    /* Activamos el scroll */
+    overflow-y: auto !important; 
+    
+    /* Espacio extra al final para que las letras no queden pegadas al borde */
+    padding-bottom: 120px !important; 
+    
+    display: block; /* Aseguramos comportamiento de bloque estándar */
 }
 
-/* Estilo de la imagen */
+/* 3. Estilo de la imagen */
 #modulo-mando img {
-    /* Sombra 3D para el mando transparente */
-    filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.6));
-    
     width: 100%;
-    height: auto;
+    height: auto; /* La imagen crece lo que necesite a lo alto */
     display: block;
-    opacity: 0.95;
+    filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.6));
     margin-bottom: 20px;
 }
