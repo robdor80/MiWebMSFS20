@@ -183,7 +183,8 @@ body.modo-vuelo {
 /* --- 2. CHECKLIST (COLORES TOC APPROVED) --- */
 
 /* Título Principal (Cessna...) - VERDE */
-#titulo-checklist {
+#titulo-checklist, 
+#titulo-ficha {
     color: #4caf50; /* Verde Éxito */
     margin-top: 0;
     margin-bottom: 15px;

@@ -53,6 +53,10 @@ async function cargarDatosAvion(id) {
         containerCheck.innerHTML = ''; 
         tituloCheck.textContent = perfil.nombre + ": Procedimientos";
 
+        // --- NUEVO: Poner título también a la Ficha ---
+        const tituloFicha = document.getElementById('titulo-ficha');
+        if (tituloFicha) tituloFicha.textContent = perfil.nombre + ": Datos Técnicos";
+
         if (perfil.checklists) {
             Object.entries(perfil.checklists).forEach(([faseKey, pasos], faseIndex) => {
                 
@@ -60,7 +64,7 @@ async function cargarDatosAvion(id) {
                 const h3 = document.createElement('h3');
                 h3.textContent = formatearTitulo(faseKey);
                 
-                // AHORA USAMOS CLASE CSS (Gris con borde Amarillo)
+                // USAMOS CLASE CSS (Gris con borde Amarillo)
                 h3.className = 'checklist-category-title';
                 
                 containerCheck.appendChild(h3);
