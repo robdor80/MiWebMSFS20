@@ -282,25 +282,21 @@ body.modo-vuelo {
 
 /* --- 3. MANDO (MÓDULO DERECHO) --- */
 
-/* CORRECCIÓN: Permite scroll vertical en tablet para ver imagen completa */
-.columna-mando {
-    height: 100%;
-    overflow-y: auto; 
-    padding-bottom: 50px; /* Espacio extra al final */
+/* IMPORTANTE: Esto fuerza al contenedor del contenido a permitir scroll vertical */
+#modulo-mando .slot-content {
+    overflow-y: auto !important;  /* Activa el scroll si la imagen es muy alta */
+    display: block;    /* Asegura que el scroll funcione bien */
+    padding-bottom: 60px; /* Espacio extra abajo para leer las letras finales */
 }
 
+/* Estilo de la imagen */
 #modulo-mando img {
-    /* Quitamos filtros antiguos */
-    /* filter: brightness(0.85) sepia(0.2); */
-    
-    /* Nueva sombra 3D para PNG transparente */
+    /* Sombra 3D para el mando transparente */
     filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.6));
     
     width: 100%;
     height: auto;
     display: block;
-    /* border-radius: ya no hace falta si no hay fondo */
-    /* box-shadow: quitado para usar drop-shadow */
     opacity: 0.95;
     margin-bottom: 20px;
 }
