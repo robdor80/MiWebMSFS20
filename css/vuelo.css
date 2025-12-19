@@ -280,34 +280,17 @@ body.modo-vuelo {
 .btn-reset:hover { background: #333; color: #fff; border-color: #666; }
 
 
-/* --- 3. MANDO (SOLUCIÓN DEFINITIVA DE SCROLL) --- */
+/* --- 3. MANDO (SOLUCIÓN NUCLEAR DE SCROLL) --- */
 
-/* 1. El contenedor padre (.slot) ya tiene display:flex y columna */
-
-/* 2. Forzamos al contenido a tener altura relativa, no absoluta */
+/* 1. Forzamos al contenedor del contenido a permitir scroll y tener MUCHO espacio abajo */
 #modulo-mando .slot-content {
-    /* Estas 3 líneas son el truco para que el scroll funcione en Flexbox */
-    flex: 1 1 auto;     /* Ocupa el espacio disponible */
-    min-height: 0;      /* IMPORTANTE: Permite que el contenedor se encoja para activar el scroll */
-    height: 100%;       /* Asegura que sabe cuál es su límite */
-
-    /* Activamos el scroll */
-    overflow-y: auto !important; 
+    overflow-y: scroll !important; /* Forzamos que aparezca barra de scroll si hace falta */
+    flex: 1;           /* Ocupa todo el espacio vertical disponible */
+    display: block;    /* Quitamos comportamiento flex interno para evitar líos de altura */
     
-    /* Espacio extra al final para que las letras no queden pegadas al borde */
-    padding-bottom: 120px !important; 
-    
-    display: block; /* Aseguramos comportamiento de bloque estándar */
+    /* EL TRUCO: Un margen interno gigante abajo. 
+       Esto empuja el texto hacia arriba para que la barra de la tablet no lo tape */
+    padding-bottom: 200px !important; 
 }
 
-/* Estilo de la imagen REDUCIDO Y CENTRADO */
-#modulo-mando img {
-    width: 80%;        /* <--- CAMBIO: Reducimos el ancho al 92% */
-    height: auto;      /* La altura se reduce proporcionalmente */
-    margin: 15px auto; /* <--- CAMBIO: Centramos la imagen horizontalmente y damos aire vertical */
-    display: block;
-    
-    /* Sombra 3D y opacidad */
-    filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.6));
-    opacity: 0.95;
-}
+/* 2. Ajustamos la imagen para que no
