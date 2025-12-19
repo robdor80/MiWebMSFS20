@@ -1,3 +1,7 @@
+/* =========================================
+   LAYOUT PRINCIPAL
+   ========================================= */
+
 /* Quitamos scroll y márgenes para aprovechar la tablet al 100% */
 body.modo-vuelo {
     height: 100vh;
@@ -7,7 +11,7 @@ body.modo-vuelo {
     flex-direction: column;
     background-color: #121418;
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Segoe UI', sans-serif;
 }
 
 /* Barra superior muy fina */
@@ -54,7 +58,7 @@ body.modo-vuelo {
     flex: 1; 
     background-color: #1e222d; /* Fondo base del módulo */
     border: 1px solid #333;
-    border-radius: 6px; /* Bordes un poco menos redondeados para look más técnico */
+    border-radius: 6px; 
     display: flex;
     flex-direction: column;
     min-width: 0; 
@@ -66,7 +70,7 @@ body.modo-vuelo {
     background-color: #252a36;
     /* LA CLAVE: Forzamos altura idéntica para los 3, tengan botones o no */
     height: 42px; 
-    padding: 0 15px; /* Quitamos padding arriba/abajo, Flex se encarga de centrar */
+    padding: 0 15px; /* Quitamos padding vertical, Flex centra */
     border-bottom: 1px solid #333;
     
     font-size: 0.8rem;
@@ -74,45 +78,45 @@ body.modo-vuelo {
     
     display: flex;
     justify-content: space-between;
-    align-items: center; /* Esto es lo que centra el texto/botones verticalmente */
+    align-items: center; /* Centrado vertical */
     
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: bold;
     flex-shrink: 0; 
-    box-sizing: border-box; /* Asegura que el borde no sume píxeles extra */
+    box-sizing: border-box; 
 }
 
-/* NUEVO ESTILO PARA BOTONES DE PESTAÑA DISCRETOS (Sin azul) */
+/* ESTILO PARA BOTONES DE PESTAÑA DISCRETOS (Sin azul) */
 .tab-btn-discrete {
     background: none;
     border: none;
-    color: #777; /* Color inactivo (grisáceo) */
+    color: #777; /* Color inactivo */
     font-size: 0.8rem;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 5px 12px;
+    padding: 4px 10px; /* Padding ajustado */
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 8px;
     border-radius: 4px;
+    height: 100%; /* Para maximizar área de clic */
 }
 
 .tab-btn-discrete:hover {
-    color: #bbb; /* Ligeramente más claro al pasar el ratón */
+    color: #bbb; 
 }
 
-/* Estado ACTIVO: Solo texto blanco brillante, sin fondo de color */
+/* Estado ACTIVO: Solo texto blanco brillante */
 .tab-btn-discrete.active {
     color: #fff;
-    text-shadow: 0 0 8px rgba(255,255,255,0.2); /* Un brillo muy sutil */
+    text-shadow: 0 0 8px rgba(255,255,255,0.2); 
 }
 
-
-/* Contenedor interno que no hace scroll por defecto */
+/* Contenedor interno */
 .slot-content {
     flex-grow: 1;
     overflow: hidden; 
@@ -138,9 +142,7 @@ body.modo-vuelo {
     font-style: italic;
 }
 
-/* Utiles */
 .hidden { display: none !important; }
-
 
 /* --- SCROLLBAR MODERNA --- */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -148,7 +150,11 @@ body.modo-vuelo {
 ::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #555; }
 
-/* --- ESTILOS NAVLOG (MÓDULO 1) --- */
+/* =========================================
+   ESTILOS ESPECÍFICOS POR MÓDULO
+   ========================================= */
+
+/* --- 1. NAVLOG (MÓDULO IZQUIERDA) --- */
 .tramo-card {
     background-color: #252a36;
     margin-bottom: 8px;
@@ -182,7 +188,57 @@ body.modo-vuelo {
     border-top: 1px solid #333; padding-top: 4px;
 }
 
-/* --- MÓDULO 3 (MANDO - ESTILO KNEEBOARD/PAPEL OSCURO) --- */
+/* --- 2. CHECKLIST & FICHA (MÓDULO CENTRAL) --- */
+
+/* Estilo "Tech Blue" Actualizado */
+.check-row {
+    background: rgba(255,255,255,0.03); /* Fondo base muy sutil */
+    margin-bottom: 4px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    border-left: 3px solid transparent;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+/* Estado: MARCADO (CHECKED) - Verde Éxito */
+.check-row:has(input:checked) {
+    border-left-color: #4caf50; 
+    background-color: rgba(76, 175, 80, 0.1); 
+    opacity: 0.6; 
+    text-decoration: line-through;
+}
+
+.check-row label {
+    flex: 1;
+    margin-left: 10px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #eee;
+}
+
+/* La parte derecha (ON, OFF...) en Azul Técnico */
+.check-row span {
+    color: #4a90e2; 
+    font-weight: bold;
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+/* Tablas para la Ficha Técnica */
+.tabla-datos { width: 100%; border-collapse: collapse; font-size: 0.9rem; color: #ddd; }
+.tabla-datos td { border-bottom: 1px solid #444; padding: 6px 4px; }
+.tabla-datos .num { text-align: right; color: #4caf50; font-family: monospace; font-size: 1.1em;}
+
+/* Botón Reset */
+.btn-reset { width: 100%; margin-top: 15px; padding: 8px; background: #333; color: white; border: 1px solid #555; cursor: pointer; border-radius: 4px;}
+.btn-reset:hover { background: #444; }
+
+
+/* --- 3. MANDO (MÓDULO DERECHA) --- */
 #modulo-mando img {
     /* Bajamos brillo y damos tono sepia/cálido para que no deslumbre */
     filter: brightness(0.85) sepia(0.2);
