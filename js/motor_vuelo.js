@@ -12,6 +12,16 @@ async function iniciarVuelo() {
     try {
         await cargarDatosAvion(idAvion);
         iniciarReloj();
+        
+        // Recuperar última ruta si existe
+        const rutaGuardada = localStorage.getItem('ruta_temporal');
+        if (rutaGuardada) {
+            try {
+                const datos = JSON.parse(rutaGuardada);
+                renderizarRuta(datos);
+            } catch (e) { console.log("Error restaurando ruta"); }
+        }
+        
     } catch (error) {
         console.error("Error iniciando vuelo:", error);
         alert("Error cargando el avión. Revisa la consola.");
@@ -19,26 +29,23 @@ async function iniciarVuelo() {
 }
 
 async function cargarDatosAvion(id) {
-    // 1. Buscamos el avión en la flota
     const respFlota = await fetch('../data/flota.json');
     const flota = await respFlota.json();
     
     const avionInfo = flota.find(a => a.id === id);
     if (!avionInfo) throw new Error("Avión no encontrado en flota");
 
-    // 2. Cargamos su perfil completo
     const respPerfil = await fetch('../' + avionInfo.archivo_perfil);
     const perfil = await respPerfil.json();
 
     window.perfilAvionActual = perfil;
 
-    // 3. Rellenamos la barra superior
     const indicador = document.getElementById('indicador-avion');
     if (indicador) indicador.textContent = perfil.nombre;
 
     /* --- GENERACIÓN DINÁMICA DE CONTENIDO --- */
 
-    // A) Generar CHECKLIST (Todas las fases)
+    // A) Generar CHECKLIST
     const containerCheck = document.getElementById('checklist-container');
     const tituloCheck = document.getElementById('titulo-checklist');
     
@@ -52,9 +59,13 @@ async function cargarDatosAvion(id) {
                 const h3 = document.createElement('h3');
                 h3.textContent = formatearTitulo(faseKey);
                 h3.style.marginTop = "20px";
-                h3.style.borderBottom = "2px solid #ff9800"; 
+                
+                // CAMBIO DE COLOR DE LÍNEA: AHORA AZUL
+                h3.style.borderBottom = "2px solid #4a90e2"; 
+                
                 h3.style.paddingBottom = "5px";
-                h3.style.color = "#ddd"; 
+                h3.style.color = "#fff"; 
+                h3.style.fontSize = "0.95rem";
                 containerCheck.appendChild(h3);
 
                 // Pasos de la fase
@@ -125,7 +136,6 @@ async function cargarDatosAvion(id) {
             img.src = '../' + perfil.imagen_mando; 
             img.alt = "Configuración de Mando";
             
-            // Estilos básicos (el resto va por CSS)
             img.style.width = "100%";
             img.style.height = "auto";
             img.style.display = "block";
@@ -145,9 +155,7 @@ async function cargarDatosAvion(id) {
 
 function formatearTitulo(texto) {
     if (!texto) return "";
-    return texto
-        .replace(/_/g, ' ')
-        .replace(/\b\w/g, l => l.toUpperCase());
+    return texto.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
 function iniciarReloj() {
@@ -160,14 +168,12 @@ function iniciarReloj() {
 }
 
 /* --- FUNCIONES UI (PESTAÑAS) --- */
-
 function switchTab(tabName) {
     const checklist = document.getElementById('tab-checklist');
     const ficha = document.getElementById('tab-ficha');
     
     if (!checklist || !ficha) return;
 
-    // 1. Mostrar/Ocultar contenido
     if (tabName === 'checklist') {
         checklist.classList.remove('hidden');
         ficha.classList.add('hidden');
@@ -176,19 +182,12 @@ function switchTab(tabName) {
         ficha.classList.remove('hidden');
     }
 
-    // 2. Actualizar estado de los botones (NUEVA VERSIÓN DISCRETA)
-    // Buscamos todos los botones con la nueva clase
     const btns = document.querySelectorAll('.tab-btn-discrete');
-    
-    // Reseteamos todos (quitamos 'active')
     btns.forEach(btn => btn.classList.remove('active'));
 
-    // Activamos el correcto según su texto o posición
     if (tabName === 'checklist') {
-        // Asumimos que el primero es checklist
         if(btns[0]) btns[0].classList.add('active');
     } else {
-        // Asumimos que el segundo es ficha
         if(btns[1]) btns[1].classList.add('active');
     }
 }
@@ -202,7 +201,6 @@ function resetChecklist() {
    GESTIÓN DE RUTAS (MÓDULO 1)
    ========================================== */
 
-// 1. Cargar desde servidor (Selector)
 async function cargarRutaSeleccionada(nombreArchivo) {
     if (!nombreArchivo) return;
 
@@ -217,6 +215,9 @@ async function cargarRutaSeleccionada(nombreArchivo) {
         
         const datos = await respuesta.json();
         renderizarRuta(datos);
+        
+        // Guardar en memoria
+        localStorage.setItem('ruta_temporal', JSON.stringify(datos));
 
     } catch (error) {
         console.error(error);
@@ -225,7 +226,6 @@ async function cargarRutaSeleccionada(nombreArchivo) {
     }
 }
 
-// 2. Cargar desde PC (Input File) - NUEVO
 function cargarRutaDesdePC(input) {
     const archivo = input.files[0];
     if (!archivo) return;
@@ -236,8 +236,8 @@ function cargarRutaDesdePC(input) {
         try {
             const datos = JSON.parse(evento.target.result);
             renderizarRuta(datos);
+            localStorage.setItem('ruta_temporal', JSON.stringify(datos));
             
-            // Limpiamos el selector para evitar confusión
             const selector = document.getElementById('selector-ruta');
             if(selector) selector.value = "";
             
@@ -250,7 +250,6 @@ function cargarRutaDesdePC(input) {
     lector.readAsText(archivo);
 }
 
-// 3. Pintar en pantalla
 function renderizarRuta(datos) {
     const headerInfo = document.getElementById('info-ruta-header');
     document.getElementById('ruta-nombre').textContent = datos.meta.nombre;

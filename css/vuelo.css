@@ -16,7 +16,7 @@ body.modo-vuelo {
 
 /* Barra superior muy fina */
 .top-bar {
-    height: 35px; /* Un pelín más fina para ganar espacio */
+    height: 35px;
     background-color: #0d0f12;
     border-bottom: 1px solid #222;
     display: flex;
@@ -65,12 +65,11 @@ body.modo-vuelo {
     height: 100%; 
 }
 
-/* --- CABECERA UNIFICADA (FIX PARA EL TOC: ALTURA FIJA EXACTA) --- */
+/* --- CABECERA UNIFICADA (FIX ALTURA FIJA) --- */
 .slot-header {
     background-color: #252a36;
-    /* LA CLAVE: Forzamos altura idéntica para los 3, tengan botones o no */
-    height: 42px; 
-    padding: 0 15px; /* Quitamos padding vertical, Flex centra */
+    height: 42px; /* Altura idéntica para los 3 */
+    padding: 0 15px; 
     border-bottom: 1px solid #333;
     
     font-size: 0.8rem;
@@ -78,7 +77,7 @@ body.modo-vuelo {
     
     display: flex;
     justify-content: space-between;
-    align-items: center; /* Centrado vertical */
+    align-items: center;
     
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -87,7 +86,7 @@ body.modo-vuelo {
     box-sizing: border-box; 
 }
 
-/* ESTILO PARA BOTONES DE PESTAÑA DISCRETOS (Sin azul) */
+/* ESTILO PARA BOTONES DE PESTAÑA DISCRETOS */
 .tab-btn-discrete {
     background: none;
     border: none;
@@ -96,14 +95,14 @@ body.modo-vuelo {
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 1px;
-    padding: 4px 10px; /* Padding ajustado */
+    padding: 4px 10px;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     gap: 8px;
     border-radius: 4px;
-    height: 100%; /* Para maximizar área de clic */
+    height: 100%; 
 }
 
 .tab-btn-discrete:hover {
@@ -131,7 +130,7 @@ body.modo-vuelo {
     flex-grow: 1;
     overflow-y: auto; 
     padding-right: 5px; 
-    padding-bottom: 120px; /* Colchón tablet */
+    padding-bottom: 120px; 
 }
 
 .placeholder {
@@ -144,17 +143,17 @@ body.modo-vuelo {
 
 .hidden { display: none !important; }
 
-/* --- SCROLLBAR MODERNA --- */
+/* --- SCROLLBAR --- */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
 ::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #555; }
 
 /* =========================================
-   ESTILOS ESPECÍFICOS POR MÓDULO
+   ESTILOS POR MÓDULO
    ========================================= */
 
-/* --- 1. NAVLOG (MÓDULO IZQUIERDA) --- */
+/* --- 1. NAVLOG --- */
 .tramo-card {
     background-color: #252a36;
     margin-bottom: 8px;
@@ -188,23 +187,21 @@ body.modo-vuelo {
     border-top: 1px solid #333; padding-top: 4px;
 }
 
-/* --- 2. CHECKLIST & FICHA (MÓDULO CENTRAL) --- */
-
-/* Estilo "Tech Blue" Actualizado */
+/* --- 2. CHECKLIST (MODIFICADO: AZUL Y VERDE) --- */
 .check-row {
-    background: rgba(255,255,255,0.03); /* Fondo base muy sutil */
+    background: rgba(255,255,255,0.03); 
     margin-bottom: 4px;
     padding: 8px 10px;
     display: flex;
     align-items: center;
-    border-left: 3px solid transparent;
+    border-left: 3px solid transparent; /* Invisible por defecto */
     border-radius: 4px;
     transition: all 0.2s ease;
 }
 
-/* Estado: MARCADO (CHECKED) - Verde Éxito */
+/* Cuando marcas la casilla: Borde Verde y fondo suave */
 .check-row:has(input:checked) {
-    border-left-color: #4caf50; 
+    border-left-color: #4caf50; /* VERDE */
     background-color: rgba(76, 175, 80, 0.1); 
     opacity: 0.6; 
     text-decoration: line-through;
@@ -220,15 +217,15 @@ body.modo-vuelo {
     color: #eee;
 }
 
-/* La parte derecha (ON, OFF...) en Azul Técnico */
+/* Texto de la derecha (ON, OFF...): AHORA AZUL */
 .check-row span {
-    color: #4a90e2; 
+    color: #4a90e2; /* AZUL TÉCNICO */
     font-weight: bold;
     font-family: 'Segoe UI', sans-serif;
     letter-spacing: 0.5px;
 }
 
-/* Tablas para la Ficha Técnica */
+/* Tablas Ficha */
 .tabla-datos { width: 100%; border-collapse: collapse; font-size: 0.9rem; color: #ddd; }
 .tabla-datos td { border-bottom: 1px solid #444; padding: 6px 4px; }
 .tabla-datos .num { text-align: right; color: #4caf50; font-family: monospace; font-size: 1.1em;}
@@ -238,9 +235,8 @@ body.modo-vuelo {
 .btn-reset:hover { background: #444; }
 
 
-/* --- 3. MANDO (MÓDULO DERECHA) --- */
+/* --- 3. MANDO --- */
 #modulo-mando img {
-    /* Bajamos brillo y damos tono sepia/cálido para que no deslumbre */
     filter: brightness(0.85) sepia(0.2);
     width: 100%;
     height: auto;
