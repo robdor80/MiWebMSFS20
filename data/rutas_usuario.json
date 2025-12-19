@@ -1,1 +1,22 @@
-[]
+[
+    {
+        "id": "ruta_001",
+        "archivo": "vigo_santiago.json",
+        "nombre": "Vigo (LEVX) - Santiago (LEST)",
+        "dep": "LEVX",
+        "arr": "LEST",
+        "distancia": "42 nm",
+        "tiempo": "35 min",
+        "descripcion": "Ruta costera escénica ideal para entrenamiento VFR. Salida norte desde Peinador hacia Lavacolla."
+    },
+    {
+        "id": "ruta_002",
+        "archivo": "xinzo_beariz.json",
+        "nombre": "Xinzo - Beariz",
+        "dep": "XINZO",
+        "arr": "BEARIZ",
+        "distancia": "28 nm",
+        "tiempo": "25 min",
+        "descripcion": "Vuelo de interior sobre terreno montañoso. Referencias visuales en embalses y picos."
+    }
+]

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despacho de Vuelos | MiWebMSFS20</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- ESTILOS ESPECÍFICOS DEL DESPACHO --- */
+        body { 
+            background-color: #0f0f0f; 
+            color: white; 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            margin: 0; 
+            overflow: hidden; 
+        }
+        
+        /* Header simple */
+        header { 
+            background: #111; 
+            padding: 15px 20px; 
+            border-bottom: 1px solid #333; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            flex-shrink: 0;
+        }
+        h1 { margin: 0; font-size: 1.2rem; text-transform: uppercase; letter-spacing: 2px; color: #fff; }
+        
+        /* Contenedor principal con scroll */
+        .main-container { 
+            flex: 1; 
+            padding: 20px; 
+            overflow-y: auto; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            width: 100%; 
+            box-sizing: border-box; 
+        }
+        
+        /* GRID DE RUTAS */
+        .grid-rutas { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); 
+            gap: 20px; 
+            padding-bottom: 100px; /* Espacio para la barra inferior */
+        }
+        
+        /* Tarjeta de Ruta (Estilo NavLog) */
+        .route-card {
+            background: #1e222d;
+            border: 1px solid #333;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .route-card:hover { transform: translateY(-2px); border-color: #555; }
+        
+        /* Estado SELECCIONADO */
+        .route-card.selected {
+            border: 2px solid #4caf50;
+            background: #252a36;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.2);
+        }
+        .route-card.selected::after {
+            content: '\f00c'; /* Icono Check */
+            font-family: "Font Awesome 6 Free"; font-weight: 900;
+            position: absolute; top: 10px; right: 10px;
+            color: #4caf50; font-size: 1.2rem;
+        }
+
+        .rc-header {
+            background: rgba(255,255,255,0.05);
+            padding: 10px 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid #333;
+        }
+        .rc-codes { font-weight: bold; font-size: 1.1rem; color: #fff; letter-spacing: 1px; }
+        .rc-icon { color: #4a90e2; margin: 0 10px; }
+
+        .rc-body { padding: 15px; }
+        .rc-title { color: #4a90e2; margin: 0 0 10px 0; font-size: 1rem; }
+        .rc-desc { color: #888; font-size: 0.85rem; margin-bottom: 15px; line-height: 1.4; }
+        
+        .rc-stats { display: flex; gap: 15px; font-family: monospace; color: #aaa; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; }
+        .rc-stats span i { color: #4caf50; margin-right: 5px; }
+
+        /* BARRA INFERIOR DE ACCIÓN (FLIGHT BAR) */
+        .flight-bar {
+            background: #181818;
+            border-top: 1px solid #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            
+            /* Animación de entrada */
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            transform: translateY(100%); 
+            transition: transform 0.3s ease-out;
+            box-sizing: border-box;
+        }
+        .flight-bar.visible { transform: translateY(0); }
+
+        /* Selector de Avión */
+        .plane-selector {
+            padding: 10px;
+            background: #222;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 4px;
+            font-size: 1rem;
+            min-width: 250px;
+        }
+
+        /* Botón VOLAR */
+        .btn-launch {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.2s;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .btn-launch:hover { background: #43a047; box-shadow: 0 0 10px rgba(76,175,80,0.4); }
+        .btn-launch:disabled { background: #333; color: #666; cursor: not-allowed; box-shadow: none; }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" style="color: #666; text-decoration: none; font-size: 1.2rem;">
+            <i class="fas fa-home"></i>
+        </a>
+        <h1>Despacho de Vuelos VFR</h1>
+    </header>
+
+    <div class="main-container">
+        <h2 style="color:#666; font-weight:300; margin-bottom:20px; border-bottom: 1px solid #333; padding-bottom: 10px;">
+            1. SELECCIONA TU RUTA
+        </h2>
+        
+        <div id="grid-rutas" class="grid-rutas">
+            <p style="color:#666;">Cargando base de datos de rutas...</p>
+        </div>
+    </div>
+
+    <footer id="flight-bar" class="flight-bar">
+        <div style="display:flex; flex-direction:column;">
+            <label style="color:#888; font-size:0.8rem; margin-bottom:5px;">2. ASIGNA AERONAVE</label>
+            <select id="selector-avion" class="plane-selector">
+                <option value="">-- Cargando Hangar --</option>
+            </select>
+        </div>
+
+        <button id="btn-volar" class="btn-launch" onclick="lanzarVuelo()">
+            DESPEGAR <i class="fas fa-plane-departure"></i>
+        </button>
+    </footer>
+
+    <script>
+        let rutaSeleccionada = null; 
+        let flotaCargada = false;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await cargarRutas();
+            await cargarSelectorAviones();
+        });
+
+        // 1. CARGAR VISOR DE RUTAS
+        async function cargarRutas() {
+            const grid = document.getElementById('grid-rutas');
+            try {
+                // AQUI CARGAMOS TU ARCHIVO: rutas_usuario.json
+                const resp = await fetch('../data/rutas_usuario.json'); 
+                
+                if(!resp.ok) throw new Error("No se encontró data/rutas_usuario.json");
+                const rutas = await resp.json();
+
+                if(rutas.length === 0) {
+                    grid.innerHTML = '<p>No hay rutas guardadas en rutas_usuario.json</p>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                rutas.forEach(ruta => {
+                    const card = document.createElement('div');
+                    card.className = 'route-card';
+                    card.onclick = () => seleccionarTarjeta(card, ruta);
+
+                    card.innerHTML = `
+                        <div class="rc-header">
+                            <span class="rc-codes">${ruta.dep || '???'} <i class="fas fa-arrow-right rc-icon"></i> ${ruta.arr || '???'}</span>
+                            <i class="fas fa-map"></i>
+                        </div>
+                        <div class="rc-body">
+                            <h3 class="rc-title">${ruta.nombre}</h3>
+                            <p class="rc-desc">${ruta.descripcion || 'Sin descripción.'}</p>
+                            <div class="rc-stats">
+                                <span title="Distancia"><i class="fas fa-ruler"></i> ${ruta.distancia || '--'}</span>
+                                <span title="Tiempo estimado"><i class="far fa-clock"></i> ${ruta.tiempo || '--'}</span>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+
+            } catch (e) {
+                grid.innerHTML = `<p style="color:red">Error cargando rutas: ${e.message}</p>`;
+            }
+        }
+
+        // 2. CARGAR SELECTOR DE AVIONES
+        async function cargarSelectorAviones() {
+            const select = document.getElementById('selector-avion');
+            try {
+                const resp = await fetch('../data/flota.json');
+                const flota = await resp.json();
+                
+                select.innerHTML = '<option value="">-- Selecciona Avión --</option>';
+                flota.forEach(avion => {
+                    const opt = document.createElement('option');
+                    opt.value = avion.id;
+                    opt.textContent = avion.nombre;
+                    select.appendChild(opt);
+                });
+                flotaCargada = true;
+            } catch (e) {
+                select.innerHTML = '<option>Error cargando flota</option>';
+            }
+        }
+
+        // 3. LÓGICA DE SELECCIÓN VISUAL
+        function seleccionarTarjeta(cardDOM, datosRuta) {
+            // Quitar clase selected a todos
+            document.querySelectorAll('.route-card').forEach(c => c.classList.remove('selected'));
+            // Poner al actual
+            cardDOM.classList.add('selected');
+            
+            // Guardar datos en variable temporal
+            rutaSeleccionada = datosRuta;
+
+            // Mostrar barra inferior
+            document.getElementById('flight-bar').classList.add('visible');
+        }
+
+        // 4. ACCIÓN FINAL: IR A VUELO
+        async function lanzarVuelo() {
+            const idAvion = document.getElementById('selector-avion').value;
+            
+            if (!rutaSeleccionada) { alert("Selecciona una ruta primero."); return; }
+            if (!idAvion) { alert("Por favor, asigna una aeronave para esta misión."); return; }
+
+            // A) Guardamos el AVIÓN seleccionado
+            localStorage.setItem('avion_seleccionado', idAvion);
+
+            // B) Cargamos el JSON REAL de la ruta (el archivo grande)
+            try {
+                const btn = document.getElementById('btn-volar');
+                const textoOriginal = btn.innerHTML;
+                btn.textContent = "CARGANDO...";
+                btn.disabled = true;
+
+                // Leemos el archivo detallado (ej: data/rutas/vigo_santiago.json)
+                const resp = await fetch('../data/rutas/' + rutaSeleccionada.archivo);
+                
+                if(!resp.ok) throw new Error("No se encuentra el archivo detallado: " + rutaSeleccionada.archivo);
+                
+                const datosCompletos = await resp.json();
+                
+                // Guardamos la ruta completa en memoria para que vuelo.html la lea al abrir
+                localStorage.setItem('ruta_temporal', JSON.stringify(datosCompletos));
+
+                // C) DESPEGUE -> Vamos a la cabina
+                window.location.href = '../vfr/vuelo.html';
+
+            } catch (e) {
+                alert("Error cargando la ruta: " + e.message);
+                const btn = document.getElementById('btn-volar');
+                btn.disabled = false;
+                btn.innerHTML = 'DESPEGAR <i class="fas fa-plane-departure"></i>';
+            }
+        }
+    </script>
+</body>
+</html>
