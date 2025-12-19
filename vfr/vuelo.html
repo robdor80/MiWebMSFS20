@@ -28,14 +28,16 @@
             <div class="slot-header">
                 <span>NavLog VFR <i class="fas fa-map-marked-alt"></i></span>
 
-                <div style="display:flex; gap:10px; align-items: center;">
-                    <a href="../herramientas/creador_rutas.html" target="_blank" title="Crear Nueva Ruta"
-                        style="text-decoration:none; color:#aaa; font-size: 1rem;">
-                        <i class="fas fa-plus-square"></i>
+                <div style="display:flex; gap:8px; align-items: center;">
+                    <a href="../herramientas/creador_rutas.html" target="_blank" title="Crear o Editar Ruta"
+                        style="text-decoration:none; color:#aaa; font-size: 0.9rem; display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.05); padding: 2px 8px; border-radius: 4px; border: 1px solid #444;">
+                        <i class="fas fa-plus"></i>
+                        <span style="font-size: 0.8rem; opacity: 0.5;">/</span>
+                        <i class="fas fa-pen" style="font-size: 0.8rem;"></i>
                     </a>
 
                     <label for="input-ruta-local" title="Cargar ruta desde archivo .json"
-                        style="cursor:pointer; color:#aaa; font-size: 1rem;">
+                        style="cursor:pointer; color:#aaa; font-size: 1rem; margin-left: 5px;">
                         <i class="fas fa-folder-open"></i>
                     </label>
                     <input type="file" id="input-ruta-local" accept=".json" style="display:none;"
@@ -125,7 +127,6 @@
     </main>
 
     <style>
-        /* Solo dejamos esto por seguridad, el resto está en vuelo.css */
         .hidden {
             display: none !important;
         }
