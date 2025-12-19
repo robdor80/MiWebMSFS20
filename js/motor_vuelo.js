@@ -55,20 +55,17 @@ async function cargarDatosAvion(id) {
 
         if (perfil.checklists) {
             Object.entries(perfil.checklists).forEach(([faseKey, pasos], faseIndex) => {
-                // Título de la fase
+                
+                // --- TÍTULO DE FASE (Antes Puesta En Marcha...) ---
                 const h3 = document.createElement('h3');
                 h3.textContent = formatearTitulo(faseKey);
-                h3.style.marginTop = "20px";
                 
-                // CAMBIO DE COLOR DE LÍNEA: AHORA AZUL
-                h3.style.borderBottom = "2px solid #4a90e2"; 
+                // AHORA USAMOS CLASE CSS (Gris con borde Amarillo)
+                h3.className = 'checklist-category-title';
                 
-                h3.style.paddingBottom = "5px";
-                h3.style.color = "#fff"; 
-                h3.style.fontSize = "0.95rem";
                 containerCheck.appendChild(h3);
 
-                // Pasos de la fase
+                // --- PASOS DE LA FASE ---
                 pasos.forEach((pasoTexto, pasoIndex) => {
                     const div = document.createElement('div');
                     div.className = 'check-row';
