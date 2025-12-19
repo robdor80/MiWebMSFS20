@@ -164,40 +164,86 @@
 
         async function cargarFlota() {
             const grid = document.getElementById('grid-aviones');
+            grid.innerHTML = '<p style="color: #aaa;">Iniciando escaneo de hangar...</p>';
 
             try {
                 // 1. Pedimos el archivo JSON de la flota
+                // IMPORTANTE: Asegúrate de que existe data/flota.json
                 const response = await fetch('../data/flota.json');
-                if (!response.ok) throw new Error("Error cargando flota.json");
+                
+                if (!response.ok) {
+                    throw new Error(`No se pudo cargar data/flota.json (Error ${response.status})`);
+                }
                 
                 const listaFlota = await response.json();
-                grid.innerHTML = '';
+                grid.innerHTML = ''; // Limpiamos mensaje de carga
 
-                // 2. Cargamos cada perfil individual
+                if (listaFlota.length === 0) {
+                    grid.innerHTML = '<p>El archivo flota.json está vacío.</p>';
+                    return;
+                }
+
+                // 2. Cargamos cada avión
                 for (const item of listaFlota) {
                     try {
-                        const respPerfil = await fetch('../' + item.archivo_perfil);
-                        const avion = await respPerfil.json();
-                        
-                        // Guardamos en la variable global para usarla en el modal
-                        avion.id = item.id; // Aseguramos que tenga ID
-                        flotaGlobal.push(avion);
+                        let avion = null;
 
-                        // Ajuste de ruta de imagen
-                        let rutaImagen = avion.imagenes.avion;
-                        if (!rutaImagen.startsWith('../') && !rutaImagen.startsWith('http')) {
-                            rutaImagen = '../' + rutaImagen;
+                        // CASO A: El flota.json tiene una referencia a otro archivo (ej: "archivo_perfil": "data/c152.json")
+                        if (item.archivo_perfil) {
+                            // Intentamos cargar el archivo específico
+                            const rutaPerfil = '../' + item.archivo_perfil;
+                            const respPerfil = await fetch(rutaPerfil);
+                            
+                            if (respPerfil.ok) {
+                                avion = await respPerfil.json();
+                                // Nos aseguramos de que tenga ID, si no tiene, usamos el de la lista
+                                if (!avion.id) avion.id = item.id;
+                            } else {
+                                // Si falla la carga del perfil, avisamos pero no rompemos todo
+                                console.warn(`No se cargó perfil extra para ${item.id}`);
+                            }
                         }
 
-                        // 3. Crear tarjeta HTML
+                        // CASO B: Si no había perfil extra o falló, usamos los datos que vengan en flota.json
+                        if (!avion) {
+                            avion = item; 
+                        }
+
+                        // Validación mínima: ¿Tiene nombre?
+                        if (!avion.nombre) avion.nombre = "Aeronave Desconocida (" + (avion.id || "?") + ")";
+
+                        // Guardamos en la variable global para el modal
+                        // Si ya existe (duplicado), lo actualizamos
+                        const existe = flotaGlobal.find(a => a.id === avion.id);
+                        if (!existe) flotaGlobal.push(avion);
+
+                        // --- RENDERIZADO DE LA TARJETA ---
+                        
+                        // Ajuste de ruta de imagen (para que no salga rota)
+                        let rutaImagen = '../assets/imagenes/default/aviones.png'; // Imagen por defecto
+                        if (avion.imagenes && avion.imagenes.avion) {
+                            let imgTemp = avion.imagenes.avion;
+                            if (!imgTemp.startsWith('../') && !imgTemp.startsWith('http')) {
+                                imgTemp = '../' + imgTemp;
+                            }
+                            rutaImagen = imgTemp;
+                        } else if (avion.imagen) { // Por si usaste "imagen" en vez de "imagenes.avion"
+                            let imgTemp = avion.imagen;
+                            if (!imgTemp.startsWith('../') && !imgTemp.startsWith('http')) {
+                                imgTemp = '../' + imgTemp;
+                            }
+                            rutaImagen = imgTemp;
+                        }
+
                         const card = document.createElement('div');
                         card.className = 'card-avion';
                         
+                        // Generamos el HTML de la tarjeta
                         card.innerHTML = `
-                            <img src="${rutaImagen}" alt="${avion.nombre}" class="card-img">
+                            <img src="${rutaImagen}" alt="${avion.nombre}" class="card-img" onerror="this.src='https://via.placeholder.com/300x180?text=Sin+Imagen'">
                             <div class="card-body">
                                 <h3>${avion.nombre}</h3>
-                                <p>${avion.resumen || "Sin descripción corta."}</p>
+                                <p>${avion.resumen || avion.descripcion || "Sin descripción disponible."}</p>
                                 
                                 <div class="card-actions">
                                     <button class="btn-hangar btn-info" onclick="abrirModal('${avion.id}')">
@@ -211,28 +257,47 @@
                         `;
                         grid.appendChild(card);
 
-                    } catch (e) {
-                        console.error("Error cargando perfil:", item.archivo_perfil);
+                    } catch (errorItem) {
+                        // SI FALLA UN AVIÓN, PINTAMOS TARJETA ROJA
+                        grid.innerHTML += `
+                            <div class="card-avion" style="border: 1px solid red; padding: 10px;">
+                                <h3 style="color:red">Error en avión</h3>
+                                <p style="color:#aaa; font-size:0.8rem">${errorItem.message}</p>
+                            </div>
+                        `;
                     }
                 }
 
             } catch (error) {
-                grid.innerHTML = `<p style="color:red">Error cargando el hangar: ${error.message}</p>`;
+                // SI FALLA TODO (ej: no encuentra flota.json)
+                grid.innerHTML = `
+                    <div style="background:#330000; padding:20px; border:1px solid red; color:#ff9999; border-radius:8px;">
+                        <h3>☠️ Error Crítico del Hangar</h3>
+                        <p>${error.message}</p>
+                        <p>Verifica que el archivo <code>data/flota.json</code> existe y es correcto.</p>
+                    </div>`;
             }
         }
 
         // --- FUNCIONES DE ACCIÓN ---
 
         function seleccionarAvion(id) {
-            // Guardamos el ID y nos vamos a Vuelo
+            if(!id || id === 'undefined') {
+                alert("Error: Este avión no tiene un ID válido.");
+                return;
+            }
             localStorage.setItem('avion_seleccionado', id);
             window.location.href = '../vfr/vuelo.html';
         }
 
         function abrirModal(id) {
-            // Buscamos el avión en nuestra variable global
             const avion = flotaGlobal.find(a => a.id === id);
-            if (!avion) return;
+            
+            // Si por alguna razón no está en la lista global, intentamos buscarlo
+            if (!avion) {
+                alert("No se encuentran datos para la ficha de este avión.");
+                return;
+            }
 
             const modal = document.getElementById('modal-ficha');
             const titulo = document.getElementById('modal-titulo');
@@ -241,30 +306,41 @@
             titulo.textContent = avion.nombre;
             
             // Preparamos datos técnicos (si existen)
-            let datosTecnicosHTML = '<p>No hay datos técnicos disponibles.</p>';
+            let datosTecnicosHTML = '<p style="color:#666; font-style:italic;">No hay datos técnicos detallados.</p>';
             
             if (avion.ficha_tecnica) {
-                // Sacamos algunos datos clave para la vista rápida
                 const v = avion.ficha_tecnica.velocidades_importantes || {};
                 const c = avion.ficha_tecnica.configuracion_crucero || {};
+                const comb = avion.ficha_tecnica.combustible || {};
                 
                 datosTecnicosHTML = `
                     <table class="spec-table">
                         <tr><td>Vy (Ascenso)</td><td class="val">${v.vy_ascenso || '-'} kts</td></tr>
                         <tr><td>Vso (Stall Sucio)</td><td class="val">${v.vso || '-'} kts</td></tr>
                         <tr><td>Crucero (RPM)</td><td class="val">${c.rpm_crucero || '-'}</td></tr>
-                        <tr><td>Combustible Total</td><td class="val">${avion.ficha_tecnica.combustible?.total || '-'}</td></tr>
+                        <tr><td>Combustible Total</td><td class="val">${comb.total || '-'}</td></tr>
                     </table>
                 `;
             }
 
-            let rutaImagen = avion.imagenes.avion;
-            if (!rutaImagen.startsWith('../')) rutaImagen = '../' + rutaImagen;
+            // Gestión de imagen del modal
+            let rutaImagen = '../assets/imagenes/default/aviones.png';
+            if (avion.imagenes && avion.imagenes.avion) {
+                let imgTemp = avion.imagenes.avion;
+                if (!imgTemp.startsWith('../') && !imgTemp.startsWith('http')) imgTemp = '../' + imgTemp;
+                rutaImagen = imgTemp;
+            } else if (avion.imagen) {
+                 let imgTemp = avion.imagen;
+                if (!imgTemp.startsWith('../') && !imgTemp.startsWith('http')) imgTemp = '../' + imgTemp;
+                rutaImagen = imgTemp;
+            }
 
             cuerpo.innerHTML = `
-                <img src="${rutaImagen}" class="modal-img">
-                <p style="color:#aaa; font-size:0.9rem; margin-bottom:15px;">${avion.descripcion}</p>
-                <h4 style="color:#fff; border-bottom:1px solid #333; padding-bottom:5px;">Datos Rápidos</h4>
+                <img src="${rutaImagen}" class="modal-img" onerror="this.style.display='none'">
+                <p style="color:#ccc; font-size:0.9rem; margin-bottom:15px; line-height: 1.5;">
+                    ${avion.descripcion || avion.resumen || "Sin información adicional."}
+                </p>
+                <h4 style="color:#fff; border-bottom:1px solid #333; padding-bottom:5px; margin-top:0;">Datos Rápidos</h4>
                 ${datosTecnicosHTML}
                 <button class="btn-hangar btn-fly" onclick="seleccionarAvion('${avion.id}')" style="margin-top:20px; width:100%;">
                     SELECCIONAR Y VOLAR
@@ -278,7 +354,6 @@
             document.getElementById('modal-ficha').classList.remove('active');
         }
 
-        // Cerrar si haces clic fuera del modal
         document.getElementById('modal-ficha').addEventListener('click', function(e) {
             if (e.target === this) cerrarModal();
         });
